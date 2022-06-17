@@ -3,8 +3,11 @@ ScriptsOnlyBuild:
     Assembly-CSharp.dll:
     - CameraManager
     - EnvironmentSetup
+    - GameManager
+    - TravelingManager
     Unity.Play.Publisher.Editor.dll:
     - Unity.Play.Publisher.Editor.AnalyticsHelper
+    - Unity.Play.Publisher.Editor.PublisherWindow
     Unity.Rider.Editor.dll:
     - Packages.Rider.Editor.UnitTesting.CallbackData
     UnityEditor.TestRunner.dll:
@@ -47,6 +50,10 @@ ScriptsOnlyBuild:
       Script: {instanceID: 2398}
     - Class: 114
       Script: {instanceID: 22454}
+    - Class: 114
+      Script: {instanceID: 26192}
+    - Class: 114
+      Script: {instanceID: 26390}
     - Class: 115
       Script: {instanceID: 0}
     - Class: 135
@@ -844,6 +851,18 @@ ScriptsOnlyBuild:
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: CameraManager
+  - hash:
+      serializedVersion: 2
+      Hash: b5064ac2f8dc3310987c5b789d5f4d13
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: 
+    className: GameManager
+  - hash:
+      serializedVersion: 2
+      Hash: 5a0a0e27c94b1dd7ba8540a83c42f708
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: 
+    className: TravelingManager
   platform: 20
   scenePathNames:
   - Assets/Scenes/ActionScene.unity

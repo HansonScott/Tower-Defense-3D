@@ -14,7 +14,8 @@ public enum MapTokens
 }
 public class EnvironmentSetup : MonoBehaviour
 {
-
+    public static Vector3 CurrentSpawnPoint;
+    public static Vector3 CurrentHomePoint;
 
     public GameObject eCube01;
     public GameObject eCube02;
@@ -29,6 +30,16 @@ public class EnvironmentSetup : MonoBehaviour
 
     public static int gridSize = 50;
     float[][] ElevationValues = new float[gridSize][];
+    internal static readonly int HomeNode = gridSize - 1; // -1 for the 0-based array
+
+    static Vector3[] CurrentPath = new Vector3[gridSize];
+
+    internal static Vector3 GetNextTarget(int NodeIndex)
+    {
+        if(NodeIndex >= CurrentPath.Length) { return new Vector3(); }
+
+        return CurrentPath[NodeIndex];
+    }
 
     // Start is called before the first frame update
     void Start()
@@ -57,72 +68,15 @@ public class EnvironmentSetup : MonoBehaviour
             ElevationValues[i] = new float[gridSize];
         }
 
-        // level-dependent?
-        // based on level, add multiple paths
-        // or choose a random point
-        //Vector2 SpawnLocation = ChooseRandomStartingPosition();
-
-        // hardcode for now
-        #region default path
-        ElevationValues[20][0] = (int)MapTokens.Path;
-        ElevationValues[20][1] = (int)MapTokens.Path;
-        ElevationValues[20][2] = 5;
-        ElevationValues[20][3] = 5;
-        ElevationValues[20][4] = 5;
-        ElevationValues[20][5] = 5;
-        ElevationValues[20][6] = 5;
-        ElevationValues[20][7] = 5;
-        ElevationValues[20][8] = 5;
-        ElevationValues[20][9] = 5;
-        ElevationValues[20][10] = 5;
-        ElevationValues[20][11] = 5;
-        ElevationValues[20][12] = 5;
-        ElevationValues[20][13] = 5;
-        ElevationValues[20][14] = 5;
-        ElevationValues[20][15] = 5;
-        ElevationValues[20][16] = 5;
-        ElevationValues[20][17] = 5;
-        ElevationValues[20][18] = 5;
-        ElevationValues[20][19] = 5;
-        ElevationValues[20][20] = 5;
-        ElevationValues[20][21] = 5;
-        ElevationValues[20][22] = 5;
-        ElevationValues[20][23] = 5;
-        ElevationValues[20][24] = 5;
-        ElevationValues[20][25] = 5;
-        ElevationValues[20][26] = 5;
-        ElevationValues[20][27] = 5;
-        ElevationValues[20][28] = 5;
-        ElevationValues[20][29] = 5;
-        ElevationValues[20][30] = 5;
-        ElevationValues[20][31] = 5;
-        ElevationValues[20][32] = 5;
-        ElevationValues[20][33] = 5;
-        ElevationValues[20][34] = 5;
-        ElevationValues[20][35] = 5;
-        ElevationValues[20][36] = 5;
-        ElevationValues[20][37] = 5;
-        ElevationValues[20][38] = 5;
-        ElevationValues[20][39] = 5;
-        ElevationValues[20][40] = 5;
-        ElevationValues[20][41] = 5;
-        ElevationValues[20][42] = 5;
-        ElevationValues[20][43] = 5;
-        ElevationValues[20][44] = 5;
-        ElevationValues[20][45] = 5;
-        ElevationValues[20][46] = 5;
-        ElevationValues[20][47] = 5;
-        ElevationValues[20][48] = 5;
-        ElevationValues[20][49] = 5;
-        #endregion
-
         // place spawn token
         GameObject s = Instantiate(Spawn);
         s.transform.position = new Vector3(20f - (gridSize / 2), 1.5f,-(gridSize / 2));
+        CurrentSpawnPoint = s.transform.position;
 
         // place home tokens
         GameObject h = Instantiate(Home);
         h.transform.position = new Vector3(20f - (gridSize / 2), 1.5f, 49 - (gridSize / 2));
+        CurrentHomePoint = h.transform.position;
     }
 
     private Vector2 ChooseRandomStartingPosition()
@@ -215,6 +169,19 @@ public class EnvironmentSetup : MonoBehaviour
     }
     private void CreatePath()
     {
+        // level-dependent?
+        // based on level, add multiple paths
+        // or choose a random point
+        //Vector2 SpawnLocation = ChooseRandomStartingPosition();
 
+
+        // hardcode for now, a straight line
+        #region default path
+        for (int i = 0; i < gridSize; i++)
+        {
+            CurrentPath[i] = new Vector3(20 - (gridSize / 2), (int)MapTokens.Path, i - (gridSize / 2));
+            ElevationValues[20][i] = (float)MapTokens.Path;
+        }
+        #endregion
     }
 }
