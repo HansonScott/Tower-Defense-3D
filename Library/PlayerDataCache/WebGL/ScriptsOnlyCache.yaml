@@ -49,6 +49,10 @@ ScriptsOnlyBuild:
       Script: {instanceID: 22454}
     - Class: 115
       Script: {instanceID: 0}
+    - Class: 135
+      Script: {instanceID: 0}
+    - Class: 136
+      Script: {instanceID: 0}
     - Class: 157
       Script: {instanceID: 0}
     - Class: 196
@@ -158,7 +162,7 @@ ScriptsOnlyBuild:
     className: UnityOnBecameVisibleMessageListener
   - hash:
       serializedVersion: 2
-      Hash: b560d71085070f7e267bddf8a5298d8d
+      Hash: 869e71f020e65f011136f2fcf930d810
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: EnvironmentSetup

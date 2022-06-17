@@ -171,6 +171,9 @@ MonoBehaviour:
   eCube01: {fileID: 6596482717647390569, guid: f416f1154286c1c4eba7dbf9164d425d, type: 3}
   eCube02: {fileID: 7874249570606594190, guid: 91e6d8596617f034cb575cbf1bc4279a, type: 3}
   eCube03: {fileID: 6025138610175034178, guid: 0861d4b956e503d4fb49d315d4835e2a, type: 3}
+  pathCube: {fileID: 8432482810640984265, guid: bd51fae512edc8c4c9be7648d8812b67, type: 3}
+  Spawn: {fileID: 3548231788897562566, guid: d7797ff86529b7b48a4e90df8b08f3de, type: 3}
+  Home: {fileID: 2948742059491988417, guid: f182d9e6e26fa034babc476800f1d374, type: 3}
 --- !u!1 &1166272075
 GameObject:
   m_ObjectHideFlags: 0
@@ -367,9 +370,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   MainCamera: {fileID: 1539836728}
   CameraSpeed: 0.2
-  CamaraZoomDefault: 60
+  CameraZoomDefault: 60
   CameraZoomSpeed: 15
-  CamaraZoomInvert: 1
+  CameraZoomInvert: 1
+  CameraZoomShift: 1
 --- !u!1 &1946350351
 GameObject:
   m_ObjectHideFlags: 0
