@@ -68,7 +68,7 @@ public class GameManager : MonoBehaviour
     {
         // starting the level, reset any numbers, then start the wave
 
-        CurrentState = GameState.WaveStart;
+        //CurrentState = GameState.WaveStart;
     }
 
     private void HandleWaveStart()
@@ -118,5 +118,10 @@ public class GameManager : MonoBehaviour
 
         // destroy enemy object
         Destroy(o);
+    }
+
+    public void StartWaveClick()
+    {
+        CurrentState = GameState.WaveStart;
     }
 }
