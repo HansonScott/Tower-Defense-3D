@@ -5,9 +5,10 @@ public class CameraManager : MonoBehaviour
     public Camera MainCamera;
     public float CameraSpeed = 0.2f;
 
-    public float CamaraZoomDefault = 60;
+    public float CameraZoomDefault = 60;
     public float CameraZoomSpeed = 15f;
-    public bool CamaraZoomInvert = true;
+    public bool CameraZoomInvert = true;
+    public float CameraZoomShift = 1f;
 
     private float CameraZoomMin = 6; // a few squares
     private float CameraZoomMax = 65; // entire map
@@ -15,17 +16,19 @@ public class CameraManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        MainCamera.fieldOfView = CamaraZoomDefault;
+        MainCamera.fieldOfView = CameraZoomDefault;
     }
 
     // Update is called once per frame
     void Update()
     {
-        CheckForCamaraPan();
-        CheckForCamaraZoom();
+        CheckForcameraPan();
+        CheckForcameraZoom();
     }
-    private void CheckForCamaraPan()
+    private void CheckForcameraPan()
     {
+        bool IsShiftPressed = Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift);
+
         bool IsLeftPressed = Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow);
         bool IsRightPressed = Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.RightArrow);
         bool IsUpPressed = Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.UpArrow);
@@ -37,41 +40,70 @@ public class CameraManager : MonoBehaviour
 
         float relativeCameraSpeed = CameraSpeed * (MainCamera.fieldOfView / CameraZoomMax);
 
-        if (IsLeftPressed)
+        float newX = currentX;
+        float newZ = currentZ;
+
+        if (!IsShiftPressed) // only pan on non-shifted directions
         {
-            MainCamera.transform.position = new Vector3(currentX - relativeCameraSpeed, currentY, currentZ);
-        }
-        else if (IsRightPressed)
-        {
-            MainCamera.transform.position = new Vector3(currentX + relativeCameraSpeed, currentY, currentZ);
-        }
-        else if (IsUpPressed)
-        {
-            MainCamera.transform.position = new Vector3(currentX, currentY, currentZ + relativeCameraSpeed);
-        }
-        else if (IsDownPressed)
-        {
-            MainCamera.transform.position = new Vector3(currentX, currentY, currentZ - relativeCameraSpeed);
+            if (IsLeftPressed)
+            {
+                newX = currentX - relativeCameraSpeed;
+            }
+            if (IsRightPressed)
+            {
+                newX = currentX + relativeCameraSpeed;
+            }
+            if (IsUpPressed)
+            {
+                newZ = currentZ + relativeCameraSpeed;
+            }
+            if (IsDownPressed)
+            {
+                newZ = currentZ - relativeCameraSpeed;
+            }
+
+            MainCamera.transform.position = new Vector3(newX, currentY, newZ);
         }
     }
 
-    private void CheckForCamaraZoom()
+    private void CheckForcameraZoom()
     {
-        float val = Input.GetAxis("Mouse ScrollWheel");
         float adj = 0;
-        if(val != 0)
+
+        float val = Input.GetAxis("Mouse ScrollWheel");
+        bool IsUpPressed = Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.UpArrow);
+        bool IsDownPressed = Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.DownArrow);
+        bool IsShiftPressed = Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift);
+
+        // NOTE: Wheel works for desktop, but not for WebGL publishing
+        if (val != 0)
         {
             // adjust based on speed
-            adj = (val * CameraZoomSpeed);
-
-            // flip for invert
-            if (CamaraZoomInvert) { adj = -adj; }
-
-            // set new field of view
-            MainCamera.fieldOfView += adj;
-
-            // check FOV within bounds
-            MainCamera.fieldOfView = Mathf.Max(CameraZoomMin, Mathf.Min(MainCamera.fieldOfView, CameraZoomMax));
+            adj = val * CameraZoomSpeed;
         }
+        else if (IsShiftPressed && (IsUpPressed || IsDownPressed))
+        {
+            val = CameraZoomShift * CameraSpeed; // NOTE: use speed and not zoom speed because wheel is different than keys
+
+            // flip for up vs down...
+            if (IsDownPressed) { val = -val; }
+
+            adj = val;
+        }
+        else // neither wheel or shift, so do nothing
+        {
+            return;
+        }
+
+        // if either method changed, then...
+
+        // flip for invert
+        if (CameraZoomInvert) { adj = -adj; }
+
+        // set new field of view
+        MainCamera.fieldOfView += adj;
+
+        //check FOV within bounds
+        MainCamera.fieldOfView = Mathf.Max(CameraZoomMin, Mathf.Min(MainCamera.fieldOfView, CameraZoomMax));
     }
 }

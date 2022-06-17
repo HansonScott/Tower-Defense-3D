@@ -5,7 +5,6 @@ ScriptsOnlyBuild:
     - EnvironmentSetup
     Unity.Play.Publisher.Editor.dll:
     - Unity.Play.Publisher.Editor.AnalyticsHelper
-    - Unity.Play.Publisher.Editor.PublisherWindow
     Unity.Rider.Editor.dll:
     - Packages.Rider.Editor.UnitTesting.CallbackData
     UnityEditor.TestRunner.dll:
@@ -837,7 +836,7 @@ ScriptsOnlyBuild:
     className: UnityOnSliderValueChangedMessageListener
   - hash:
       serializedVersion: 2
-      Hash: 2a196d39f4b4cf80b39a52fca13e9307
+      Hash: 30003e919e19749ff687de8e076e1c2d
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: CameraManager
