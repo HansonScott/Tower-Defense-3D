@@ -57,9 +57,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\Scripts\EnvironmentSetup.cs" />
+    <Compile Include="Assets\Scripts\TravelingManager.cs" />
     <Compile Include="Assets\Scripts\CameraManager.cs" />
     <Compile Include="Assets\Scripts\GameManager.cs" />
-    <Compile Include="Assets\Scripts\TravelingManager.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="UnityEngine">
