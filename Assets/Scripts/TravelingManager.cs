@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class TravelingManager : MonoBehaviour
 {
-    public float CurrentTravelSpeed = 0.02f;
+    public float CurrentTravelSpeed = 0.01f;
     public int TargetNode = 1; // default to spawn node (0), plus 1.
     public Vector3 NextTarget;
 

@@ -111,7 +111,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 56567cd4832d9704f979dcfe4825982a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  CurrentTravelSpeed: 0.02
+  CurrentTravelSpeed: 0.01
   TargetNode: 1
   NextTarget: {x: 0, y: 0, z: 0}
   TargetMargin: 0.5

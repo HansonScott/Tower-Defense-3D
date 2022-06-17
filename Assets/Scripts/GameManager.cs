@@ -22,7 +22,7 @@ public class GameManager : MonoBehaviour
     public GameObject Enemy01;
 
     public int TicksSinceLastSpawn = 0;
-    public int SpawnDelay = 500;
+    public int SpawnDelay = 100;
     public int EnemyCountInWave = 10;
     private int RemainingEnemies = 10;
 

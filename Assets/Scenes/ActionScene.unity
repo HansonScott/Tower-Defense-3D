@@ -421,7 +421,8 @@ MonoBehaviour:
   CurrentState: 0
   Enemy01: {fileID: 7851626938543835271, guid: 35c7efa66eecb0141998f0955ff6900c, type: 3}
   TicksSinceLastSpawn: 0
-  SpawnDelay: 500
+  SpawnDelay: 100
+  EnemyCountInWave: 10
 --- !u!1 &1946350351
 GameObject:
   m_ObjectHideFlags: 0
