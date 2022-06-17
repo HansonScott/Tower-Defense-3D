@@ -15,17 +15,21 @@ public enum GameState
 
 public class GameManager : MonoBehaviour
 {
+    public static GameManager CurrentGame;
+
     public GameState CurrentState = GameState.SessionMenu;
 
     public GameObject Enemy01;
 
     public int TicksSinceLastSpawn = 0;
     public int SpawnDelay = 500;
-    private bool haveSpawned = false;
+    public int EnemyCountInWave = 10;
+    private int RemainingEnemies = 10;
 
     // Start is called before the first frame update
     void Start()
     {
+        CurrentGame = this;
     }
 
     // Update is called once per frame
@@ -78,11 +82,11 @@ public class GameManager : MonoBehaviour
         // check for enemy spawn count, etc.
 
         // check for spawn delay
-        if (TicksSinceLastSpawn > SpawnDelay && !haveSpawned)
+        if (TicksSinceLastSpawn > SpawnDelay && RemainingEnemies > 0)
         {
             SpawnEnemy();
             TicksSinceLastSpawn = 0;
-            haveSpawned = true;
+            RemainingEnemies--;
         }
         else
         {
@@ -106,5 +110,13 @@ public class GameManager : MonoBehaviour
     {
         GameObject e = Instantiate(Enemy01);
         e.transform.position = EnvironmentSetup.CurrentSpawnPoint;
+    }
+
+    public void EnemyHitHome(GameObject o)
+    {
+        // reduce HP of home
+
+        // destroy enemy object
+        Destroy(o);
     }
 }

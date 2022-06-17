@@ -34,6 +34,12 @@ public class TravelingManager : MonoBehaviour
 
             // progress to next node
             NextTarget = EnvironmentSetup.GetNextTarget(TargetNode++);
+
+            if(NextTarget == new Vector3())
+            {
+                //then we've hit 'home'
+                HandleHomeTargetHit();
+            }
         }
 
         // move to the next path node
@@ -59,5 +65,11 @@ public class TravelingManager : MonoBehaviour
 
         // move the enemy in that direction.
         this.transform.position += move;
+    }
+
+    private void HandleHomeTargetHit()
+    {
+        // don't do anything here, but tell the game manager what happened
+        GameManager.CurrentGame.EnemyHitHome(this.gameObject);
     }
 }
