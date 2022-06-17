@@ -3,14 +3,14 @@ using UnityEngine;
 public class CameraManager : MonoBehaviour
 {
     public Camera MainCamera;
-    public float CameraSpeed = 0.1f;
+    public float CameraSpeed = 0.2f;
 
     public float CamaraZoomDefault = 60;
-    public float CameraZoomSpeed = 10f;
+    public float CameraZoomSpeed = 15f;
     public bool CamaraZoomInvert = true;
 
-    private float CameraZoomMax = 65;
-    //private float CameraZoomMin = 1;
+    private float CameraZoomMin = 6; // a few squares
+    private float CameraZoomMax = 65; // entire map
 
     // Start is called before the first frame update
     void Start()
@@ -70,8 +70,8 @@ public class CameraManager : MonoBehaviour
             // set new field of view
             MainCamera.fieldOfView += adj;
 
-            // check FOV within bounds?
-
+            // check FOV within bounds
+            MainCamera.fieldOfView = Mathf.Max(CameraZoomMin, Mathf.Min(MainCamera.fieldOfView, CameraZoomMax));
         }
     }
 }

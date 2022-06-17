@@ -366,9 +366,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   MainCamera: {fileID: 1539836728}
-  CameraSpeed: 0.1
+  CameraSpeed: 0.2
   CamaraZoomDefault: 60
-  CameraZoomSpeed: 10
+  CameraZoomSpeed: 15
   CamaraZoomInvert: 1
 --- !u!1 &1946350351
 GameObject:
