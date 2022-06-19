@@ -1,6 +1,3 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public enum GameState
@@ -12,29 +9,19 @@ public enum GameState
     WavePause,
     SessionEnd,
 }
-public enum UIState
-{
-    Normal,
-    PlacingTower,
-}
 
 public class GameManager : MonoBehaviour
 {
     public static GameManager CurrentGame;
 
     public GameState CurrentState = GameState.SessionMenu;
-    public UIState CurrentUIState = UIState.Normal;
 
-    public Camera MainCamera;
     public GameObject Enemy01;
-    public GameObject Tower01;
 
     public int TicksSinceLastSpawn = 0;
     public int SpawnDelay = 100;
     public int EnemyCountInWave = 10;
     private int RemainingEnemies = 10;
-
-    public GameObject CurrentlySelectedTower;
 
     // Start is called before the first frame update
     void Start()
@@ -67,17 +54,6 @@ public class GameManager : MonoBehaviour
                 break;
         }
 
-        switch(CurrentUIState)
-        {
-            case UIState.Normal:
-                break;
-            case UIState.PlacingTower:
-                if(Input.GetAxis("Mouse X") != 0 || Input.GetAxis("Mouse Y") != 0) // if we're not moving, then don't change anything.
-                {
-                    MoveCurrentlySelectedTowerToMousePosition();
-                }
-                break;
-        }
     }
 
     private void HandleSessionMenu()
@@ -148,44 +124,4 @@ public class GameManager : MonoBehaviour
         CurrentState = GameState.WaveStart;
     }
 
-    public void TowerClicked()
-    {
-        if(CurrentUIState == UIState.Normal)
-        {
-            CurrentUIState = UIState.PlacingTower;
-            CurrentlySelectedTower = GetSelectedTower();
-        }
-        else
-        {
-            // we were already placing a tower, what should we do?  Change towers?
-            CurrentlySelectedTower = GetSelectedTower();
-        }
-    }
-
-    private GameObject GetSelectedTower()
-    {
-        // instantiate the right tower based on what button was pressed
-        return Instantiate(Tower01);
-    }
-
-    private void MoveCurrentlySelectedTowerToMousePosition()
-    {
-        Vector3 mouseLocationInWorld = MainCamera.ScreenToWorldPoint(Input.mousePosition);
-        //print("mouse position: " + Input.mousePosition.ToString());
-
-        RaycastHit rHit;
-        Vector3 objectLocationInWorld = new Vector3();
-
-        if(Physics.Raycast(MainCamera.ScreenPointToRay(Input.mousePosition), out rHit))
-        {
-            objectLocationInWorld = rHit.transform.position;
-            //print("object location in world" + objectLocationInWorld.ToString());
-
-            // future - get the proper height too.
-            //print("target height: " + rHit.transform.localScale.y);
-            objectLocationInWorld.y = 1 + (rHit.transform.localScale.y / 2);
-
-            CurrentlySelectedTower.transform.position = objectLocationInWorld;
-        }
-    }
 }
