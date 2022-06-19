@@ -16,9 +16,10 @@ public class UIManager : MonoBehaviour
     public Camera MainCamera;
     public GameObject CurrentlySelectedTower;
     public GameObject Tower01;
+    public Material ValidTowerMaterial;
+    public Material InvalidTowerMaterial;
 
     Vector3 latestObjectLocationInWorld = new Vector3();
-
 
     // Start is called before the first frame update
     void Start()
@@ -37,10 +38,35 @@ public class UIManager : MonoBehaviour
                 if (Input.GetAxis("Mouse X") != 0 || Input.GetAxis("Mouse Y") != 0) // if we're not moving, then don't change anything.
                 {
                     MoveCurrentlySelectedTowerToMousePosition();
+                    ColorSelectedTowerBasedOnValidity();
                 }
                 break;
         }
     }
+
+    private void ColorSelectedTowerBasedOnValidity()
+    {
+        bool isValid = EnvironmentSetup.IsValidTowerPlacement(CurrentlySelectedTower);
+        MeshRenderer[] mats = CurrentlySelectedTower.GetComponentsInChildren<MeshRenderer>();
+
+        if (isValid)
+        {
+            // color tower valid colors
+            for (int i = 0; i < mats.Length; i++)
+            {
+                mats[i].material.color = ValidTowerMaterial.color;
+            }
+        }
+        else
+        {
+            // color tower invalid colors
+            for (int i = 0; i < mats.Length; i++)
+            {
+                mats[i].material.color = InvalidTowerMaterial.color;
+            }
+        }
+    }
+
     private void MoveCurrentlySelectedTowerToMousePosition()
     {
         Vector3 mousePosition = Input.mousePosition;
@@ -68,24 +94,6 @@ public class UIManager : MonoBehaviour
         CurrentlySelectedTower.transform.position = latestObjectLocationInWorld;
     }
 
-    //private RaycastHit GetHighestHitFromList(RaycastHit[] rHit)
-    //{
-    //    RaycastHit result = rHit[0];
-
-    //    if (rHit.Length > 1)
-    //    {
-    //        foreach(RaycastHit h in rHit)
-    //        {
-    //            if(h.transform.position.y > result.transform.position.y)
-    //            {
-    //                result = h;
-    //            }
-    //        }
-    //    }
-
-    //    return result;
-    //}
-
     public void TowerClicked()
     {
         if (CurrentUIState == UIState.Normal)
@@ -104,7 +112,5 @@ public class UIManager : MonoBehaviour
         // instantiate the right tower based on what button was pressed
         return Instantiate(Tower01);
     }
-
-
 
 }

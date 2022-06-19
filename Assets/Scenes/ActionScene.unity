@@ -388,6 +388,8 @@ MonoBehaviour:
   MainCamera: {fileID: 1539836728}
   CurrentlySelectedTower: {fileID: 0}
   Tower01: {fileID: 8246274975653233750, guid: 99f2befcb3ea9e64688e5b0f20004c75, type: 3}
+  ValidTowerMaterial: {fileID: 2100000, guid: 4c43e0ac46ac1e342976c5fd559b381c, type: 2}
+  InvalidTowerMaterial: {fileID: 2100000, guid: 6d63d852cb1d772489d5663459d50cc3, type: 2}
 --- !u!4 &874421075
 Transform:
   m_ObjectHideFlags: 0

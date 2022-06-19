@@ -47,6 +47,38 @@ public class EnvironmentSetup : MonoBehaviour
         CreateEnvironment();
     }
 
+    internal static bool IsValidTowerPlacement(GameObject tower)
+    {
+        // see if the x & z coordinates are on the path or not
+        float x = tower.transform.position.x;
+        float z = tower.transform.position.z;
+
+        bool onX = false;
+        bool onZ = false;
+
+        #region Check Path
+        foreach (Vector3 p in CurrentPath)
+        {
+            if(p.x == x) 
+            { 
+                onX = true; 
+            }
+            if(p.z == z) 
+            { 
+                onZ = true; 
+            }
+
+            if (onX && onZ) 
+            { 
+                return false; 
+            }
+        }
+        #endregion
+
+        // if we didn't match, then we're still good.
+        return true;
+    }
+
     // Update is called once per frame
     void Update()
     {
