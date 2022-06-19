@@ -44,34 +44,8 @@ public class UIManager : MonoBehaviour
     private void MoveCurrentlySelectedTowerToMousePosition()
     {
         Vector3 mousePosition = Input.mousePosition;
-        //print("mouse position: " + mousePosition.ToString());
-
-        #region NOTE: attempt 1: using Raycast isn't stable (flickers, presumably jumping between blocks and floor
-        //RaycastHit[] rHit = Physics.RaycastAll(MainCamera.ScreenPointToRay(Input.mousePosition));
-
-        //if (rHit != null && rHit.Length > 0)
-        //{
-        //    RaycastHit highestHit = GetHighestHitFromList(rHit);
-
-        //    objectLocationInWorld = highestHit.transform.position;
-
-        //    // future - get the proper height too.
-        //    //print("target height: " + rHit.transform.localScale.y);
-        //    objectLocationInWorld.y = 1 + (highestHit.transform.localScale.y / 2);
-        //}
-        #endregion
-
-        #region Attempt 2: This doesn't fallow the environment plane, but the camera plane.  Closer.
-        //mousePosition.z = 10; // guessing.
-        //Vector3 mouseLocationInWorld = MainCamera.ScreenToWorldPoint(mousePosition);
-        //print("mouse location in world" + mouseLocationInWorld.ToString());
-
-        //// tweaking needed?
-        //objectLocationInWorld = mouseLocationInWorld;
-        #endregion
-
-        #region Attempt 3: Combine knowledge of 1 & 2
         RaycastHit rHit;
+        // only do this work if we're over an environment element
         if(Physics.Raycast(MainCamera.ScreenPointToRay(Input.mousePosition), out rHit))
         {
             // if we hit our own canon, skip it.
@@ -90,9 +64,6 @@ public class UIManager : MonoBehaviour
                 latestObjectLocationInWorld.y = 1 + (t.localScale.y / 2);
             }
         }
-
-
-        #endregion
 
         CurrentlySelectedTower.transform.position = latestObjectLocationInWorld;
     }
