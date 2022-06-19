@@ -4,7 +4,8 @@ using UnityEngine;
 public enum UIState
 {
     Normal,
-    PlacingTower,
+    StartedPlacingTower,
+    StillPlacingTower,
 }
 
 public class UIManager : MonoBehaviour
@@ -34,16 +35,79 @@ public class UIManager : MonoBehaviour
         {
             case UIState.Normal:
                 break;
-            case UIState.PlacingTower:
+            case UIState.StartedPlacingTower:
+            case UIState.StillPlacingTower:
                 if (Input.GetAxis("Mouse X") != 0 || Input.GetAxis("Mouse Y") != 0) // if we're not moving, then don't change anything.
                 {
                     MoveCurrentlySelectedTowerToMousePosition();
                     ColorSelectedTowerBasedOnValidity();
                 }
+                if (Input.GetMouseButtonUp(0)) // if finishing left mouse click
+                {
+                    //print("mouse click captured");
+                    HandlePlaceTowerClick();
+                }
+
+
                 break;
         }
     }
 
+    //private void HandleMouseClick()
+    //{
+    //    switch(CurrentUIState)
+    //    {
+    //        case UIState.Normal:
+    //            HandleInfoClick();
+    //            break;
+    //        case UIState.PlacingTower:
+    //            HandlePlaceTowerClick();
+    //            break;
+    //        default:
+    //            break;
+
+    //    }
+    //}
+
+    private void HandlePlaceTowerClick()
+    {
+        // catch the first mouse click after the initial one, and don't place the tower on the same button click
+        if(CurrentUIState == UIState.StartedPlacingTower)
+        {
+            CurrentUIState = UIState.StillPlacingTower;
+            return;
+        }
+
+        if(EnvironmentSetup.IsValidTowerPlacement(CurrentlySelectedTower))
+        {
+            bool worked = EnvironmentSetup.PlaceNewTower(CurrentlySelectedTower);
+
+            if(worked)
+            {
+                CurrentUIState = UIState.Normal;
+            }
+        }
+        else
+        {
+            // notify?
+        }
+    }
+
+    private void HandleInfoClick()
+    {
+        // user clicked the mouse, but is not placing a tower
+
+        // see if they clicked on an object, if so, show that object's details.
+        Vector3 mousePosition = Input.mousePosition;
+        RaycastHit rHit;
+
+        // only do this work if user clicked an object
+        if (Physics.Raycast(MainCamera.ScreenPointToRay(mousePosition), out rHit))
+        {
+            // if we hit our own canon, skip it.
+            print("Mouse clicked on " + rHit.transform.gameObject.name);
+        }
+    }
     private void ColorSelectedTowerBasedOnValidity()
     {
         bool isValid = EnvironmentSetup.IsValidTowerPlacement(CurrentlySelectedTower);
@@ -94,11 +158,12 @@ public class UIManager : MonoBehaviour
         CurrentlySelectedTower.transform.position = latestObjectLocationInWorld;
     }
 
+    // tower menu item clicked
     public void TowerClicked()
     {
         if (CurrentUIState == UIState.Normal)
         {
-            CurrentUIState = UIState.PlacingTower;
+            CurrentUIState = UIState.StartedPlacingTower;
             CurrentlySelectedTower = GetSelectedTower();
         }
         else

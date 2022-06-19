@@ -58,11 +58,11 @@
   <ItemGroup>
     <Compile Include="Assets\Scripts\EnvironmentSetup.cs" />
     <Compile Include="Assets\Scripts\Actors\TravelingManager.cs" />
-    <Compile Include="Assets\MainCameraManager.cs" />
     <Compile Include="Assets\Scripts\CameraManager.cs" />
     <Compile Include="Assets\Scripts\Actors\EnemyObject.cs" />
     <Compile Include="Assets\Scripts\GameManager.cs" />
-    <Compile Include="Assets\UIManager.cs" />
+    <Compile Include="Assets\Scripts\UIManager.cs" />
+    <Compile Include="Assets\Scripts\Actors\HomeScript.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\TextMesh Pro\Shaders\TMPro.cginc" />

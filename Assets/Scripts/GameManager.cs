@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public enum GameState
@@ -7,6 +8,7 @@ public enum GameState
     WaveStart,
     WaveActive,
     WavePause,
+    WaveFailed,
     SessionEnd,
 }
 
@@ -48,6 +50,9 @@ public class GameManager : MonoBehaviour
                 break;
             case GameState.WavePause:
                 HandleWavePause();
+                break;
+            case GameState.WaveFailed:
+                HandleWaveFailed();
                 break;
             case GameState.SessionEnd:
                 HandleSessionEnd();
@@ -123,5 +128,10 @@ public class GameManager : MonoBehaviour
     {
         CurrentState = GameState.WaveStart;
     }
+    private void HandleWaveFailed()
+    {
+        print("wave failed!");
+    }
+
 
 }

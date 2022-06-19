@@ -33,6 +33,7 @@ public class EnvironmentSetup : MonoBehaviour
     internal static readonly int HomeNode = gridSize - 1; // -1 for the 0-based array
 
     static Vector3[] CurrentPath = new Vector3[gridSize];
+    static List<GameObject> Towers = new();
 
     internal static Vector3 GetNextTarget(int NodeIndex)
     {
@@ -75,7 +76,31 @@ public class EnvironmentSetup : MonoBehaviour
         }
         #endregion
 
+        #region Check Existing Towers
+        foreach(GameObject t in Towers)
+        {
+            // if this tower is on the same location as an existing tower
+            if(t.transform.position.x == x &&
+                t.transform.position.z == z)
+            {
+                //print("Can't place this tower over an existing tower");
+                return false;
+            }
+        }
+        #endregion
+
         // if we didn't match, then we're still good.
+        return true;
+    }
+
+    internal static bool PlaceNewTower(GameObject tower)
+    {
+        // create a new permanent tower at this tower's location
+        Towers.Add(GameObject.Instantiate(tower));
+
+        // if there's any reason it didnt' work, let the caller know
+
+        // otherwise, it worked
         return true;
     }
 
