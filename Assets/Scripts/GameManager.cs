@@ -72,7 +72,10 @@ public class GameManager : MonoBehaviour
             case UIState.Normal:
                 break;
             case UIState.PlacingTower:
-                MoveCurrentlySelectedTowerToMousePosition();
+                if(Input.GetAxis("Mouse X") != 0 || Input.GetAxis("Mouse Y") != 0) // if we're not moving, then don't change anything.
+                {
+                    MoveCurrentlySelectedTowerToMousePosition();
+                }
                 break;
         }
     }
@@ -168,7 +171,7 @@ public class GameManager : MonoBehaviour
     private void MoveCurrentlySelectedTowerToMousePosition()
     {
         Vector3 mouseLocationInWorld = MainCamera.ScreenToWorldPoint(Input.mousePosition);
-        print("mouse position: " + Input.mousePosition.ToString());
+        //print("mouse position: " + Input.mousePosition.ToString());
 
         RaycastHit rHit;
         Vector3 objectLocationInWorld = new Vector3();
@@ -176,11 +179,13 @@ public class GameManager : MonoBehaviour
         if(Physics.Raycast(MainCamera.ScreenPointToRay(Input.mousePosition), out rHit))
         {
             objectLocationInWorld = rHit.transform.position;
-        }
-        
-        print("object location in world" + objectLocationInWorld.ToString());
+            //print("object location in world" + objectLocationInWorld.ToString());
 
-        objectLocationInWorld.y = 3;
-        CurrentlySelectedTower.transform.position = objectLocationInWorld;
+            // future - get the proper height too.
+            //print("target height: " + rHit.transform.localScale.y);
+            objectLocationInWorld.y = 1 + (rHit.transform.localScale.y / 2);
+
+            CurrentlySelectedTower.transform.position = objectLocationInWorld;
+        }
     }
 }

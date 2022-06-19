@@ -1,8 +1,10 @@
+using System;
 using UnityEngine;
 
 public class CameraManager : MonoBehaviour
 {
     public Camera MainCamera;
+
     public float CameraSpeed = 0.2f;
 
     public float CameraZoomDefault = 60;
@@ -11,7 +13,7 @@ public class CameraManager : MonoBehaviour
     public float CameraZoomShift = 1f;
 
     private float CameraZoomMin = 6; // a few squares
-    private float CameraZoomMax = 65; // entire map
+    private float CameraZoomMax = 80; // entire map
 
     // Start is called before the first frame update
     void Start()
@@ -22,10 +24,11 @@ public class CameraManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        CheckForcameraPan();
-        CheckForcameraZoom();
+        CheckForCameraPan();
+        CheckForCameraZoom();
     }
-    private void CheckForcameraPan()
+
+    private void CheckForCameraPan()
     {
         bool IsShiftPressed = Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift);
 
@@ -66,7 +69,7 @@ public class CameraManager : MonoBehaviour
         }
     }
 
-    private void CheckForcameraZoom()
+    private void CheckForCameraZoom()
     {
         float adj = 0;
 
