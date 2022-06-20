@@ -1,4 +1,5 @@
 using System;
+using TMPro;
 using UnityEngine;
 
 public enum UIState
@@ -22,6 +23,11 @@ public class UIManager : MonoBehaviour
 
     Vector3 latestObjectLocationInWorld = new Vector3();
 
+    public GameObject EnemyInfoBox;
+    public TMP_Text txtHP;
+    public TMP_Text txtSpeed;
+    public TMP_Text txtArmor;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -34,6 +40,11 @@ public class UIManager : MonoBehaviour
         switch (CurrentUIState)
         {
             case UIState.Normal:
+                if (Input.GetMouseButtonUp(0)) // if finishing left mouse click
+                {
+                    //print("mouse click captured");
+                    HandleInfoClick();
+                }
                 break;
             case UIState.StartedPlacingTower:
             case UIState.StillPlacingTower:
@@ -52,22 +63,6 @@ public class UIManager : MonoBehaviour
                 break;
         }
     }
-
-    //private void HandleMouseClick()
-    //{
-    //    switch(CurrentUIState)
-    //    {
-    //        case UIState.Normal:
-    //            HandleInfoClick();
-    //            break;
-    //        case UIState.PlacingTower:
-    //            HandlePlaceTowerClick();
-    //            break;
-    //        default:
-    //            break;
-
-    //    }
-    //}
 
     private void HandlePlaceTowerClick()
     {
@@ -105,9 +100,54 @@ public class UIManager : MonoBehaviour
         if (Physics.Raycast(MainCamera.ScreenPointToRay(mousePosition), out rHit))
         {
             // if we hit our own canon, skip it.
-            print("Mouse clicked on " + rHit.transform.gameObject.name);
+            //print("Mouse clicked on " + rHit.transform.gameObject.name);
+
+            if (rHit.transform.gameObject.name.StartsWith("Enemy01"))
+            {
+                HandleEnemyInfoClick(rHit.transform.gameObject);
+                EnemyInfoBox.SetActive(true);
+            }
+            else if (rHit.transform.gameObject.name.StartsWith("Tower01"))
+            {
+                HandleTowerInfoClick(rHit.transform.gameObject);
+            }
+            else // nothing worth getting info about
+            {
+                EnemyInfoBox.SetActive(false);
+            }
+        }
+        else
+        {
+            EnemyInfoBox.SetActive(false);
+        }
+
+    }
+
+    private void HandleEnemyInfoClick(GameObject gameObject)
+    {
+        if(gameObject != null &&
+            gameObject.GetComponent<EnemyObject>() != null)
+        {
+            EnemyObject e = gameObject.GetComponent<EnemyObject>();
+            txtHP.text = "HP: " + e.HPCurrent + " / " + e.HPMax;
+            txtSpeed.text = "Speed: " + (e.SpeedCurrent * 100); // instead of a decimal...
+            txtArmor.text = "Armor: " + e.ArmorCurrent;
+
+            // list immunities / specials
+
+            // color labels if status effects active, etc.
+
+
+            // enable the enemy info box
+
         }
     }
+
+    private void HandleTowerInfoClick(GameObject gameObject)
+    {
+        throw new NotImplementedException();
+    }
+
     private void ColorSelectedTowerBasedOnValidity()
     {
         bool isValid = EnvironmentSetup.IsValidTowerPlacement(CurrentlySelectedTower);

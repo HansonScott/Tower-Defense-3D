@@ -13,7 +13,7 @@ public class CameraManager : MonoBehaviour
     public float CameraZoomShift = 1f;
 
     private float CameraZoomMin = 6; // a few squares
-    private float CameraZoomMax = 80; // entire map
+    private float CameraZoomMax = 100; // entire map
 
     // Start is called before the first frame update
     void Start()

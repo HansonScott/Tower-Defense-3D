@@ -5,7 +5,6 @@ using UnityEngine;
 
 public class TravelingManager : MonoBehaviour
 {
-    public float CurrentTravelSpeed = 0.01f;
     public int TargetNode = 1; // default to spawn node (0), plus 1.
     public Vector3 NextTarget;
 
@@ -61,7 +60,7 @@ public class TravelingManager : MonoBehaviour
         move.y = 0; // no need to move vertically
 
         // normalize on speed
-        move = move.normalized * CurrentTravelSpeed;
+        move = move.normalized * this.gameObject.GetComponent<EnemyObject>().SpeedCurrent;
 
         // move the enemy in that direction.
         this.transform.position += move;

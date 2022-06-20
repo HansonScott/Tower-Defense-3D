@@ -18,12 +18,15 @@ public class GameManager : MonoBehaviour
 
     public GameState CurrentState = GameState.SessionMenu;
 
-    public GameObject Enemy01;
+    public EnemyObject EnemyTemplate;
+    private Color enemyTemplateForThisWave;
 
     public int TicksSinceLastSpawn = 0;
-    public int SpawnDelay = 100;
+    public int SpawnDelay = 1000;
     public int EnemyCountInWave = 10;
     private int RemainingEnemies = 10;
+
+    public int CurrentWave = 20;
 
     // Start is called before the first frame update
     void Start()
@@ -43,7 +46,7 @@ public class GameManager : MonoBehaviour
                 HandleSessionStart();
                 break;
             case GameState.WaveStart:
-                HandleWaveStart();
+                HandleWaveStart(++CurrentWave * 10);
                 break;
             case GameState.WaveActive:
                 HandleWaveActive();
@@ -75,9 +78,12 @@ public class GameManager : MonoBehaviour
         //CurrentState = GameState.WaveStart;
     }
 
-    private void HandleWaveStart()
+    private void HandleWaveStart(int powerLevel)
     {
-        // start the wave variables, then set to active
+        // start the wave variables
+        enemyTemplateForThisWave = EnemyObject.GetRandomEnemyProperties(powerLevel);
+
+        // then set the wave to active
         CurrentState = GameState.WaveActive;
     }
 
@@ -88,7 +94,15 @@ public class GameManager : MonoBehaviour
         // check for spawn delay
         if (TicksSinceLastSpawn > SpawnDelay && RemainingEnemies > 0)
         {
-            SpawnEnemy();
+            EnemyObject e = Instantiate<EnemyObject>(EnemyTemplate);
+
+            // do anything to this particular one?
+            e.gameObject.GetComponent<MeshRenderer>().material.color = enemyTemplateForThisWave;
+
+            e.ApplyPropertiesFromColor(enemyTemplateForThisWave);
+            e.transform.position = EnvironmentSetup.CurrentSpawnPoint;
+
+            // reset for next enemy
             TicksSinceLastSpawn = 0;
             RemainingEnemies--;
         }
@@ -110,15 +124,11 @@ public class GameManager : MonoBehaviour
         // set final score, return to menu
         CurrentState = GameState.SessionMenu;
     }
-    private void SpawnEnemy()
-    {
-        GameObject e = Instantiate(Enemy01);
-        e.transform.position = EnvironmentSetup.CurrentSpawnPoint;
-    }
 
     public void EnemyHitHome(GameObject o)
     {
         // reduce HP of home
+        
 
         // destroy enemy object
         Destroy(o);
@@ -132,6 +142,4 @@ public class GameManager : MonoBehaviour
     {
         print("wave failed!");
     }
-
-
 }
