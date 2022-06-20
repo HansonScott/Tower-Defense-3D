@@ -26,6 +26,8 @@ public class EnvironmentSetup : MonoBehaviour
     public GameObject Spawn;
     public GameObject Home;
 
+    public GameObject CurrentHome;
+
     UnityEngine.SceneManagement.Scene CurrentScene;
 
     public static int gridSize = 50;
@@ -34,6 +36,8 @@ public class EnvironmentSetup : MonoBehaviour
 
     static Vector3[] CurrentPath = new Vector3[gridSize];
     static List<GameObject> Towers = new();
+
+    public static EnvironmentSetup CurrentEnvironment;
 
     internal static Vector3 GetNextTarget(int NodeIndex)
     {
@@ -45,6 +49,7 @@ public class EnvironmentSetup : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        CurrentEnvironment = this;
         CreateEnvironment();
     }
 
@@ -131,9 +136,9 @@ public class EnvironmentSetup : MonoBehaviour
         CurrentSpawnPoint = s.transform.position;
 
         // place home tokens
-        GameObject h = Instantiate(Home);
-        h.transform.position = new Vector3(20f - (gridSize / 2), 1.5f, 49 - (gridSize / 2));
-        CurrentHomePoint = h.transform.position;
+        CurrentHome = Instantiate(Home);
+        CurrentHome.transform.position = new Vector3(20f - (gridSize / 2), 1.5f, 49 - (gridSize / 2));
+        CurrentHomePoint = CurrentHome.transform.position;
     }
 
     private Vector2 ChooseRandomStartingPosition()
@@ -240,5 +245,20 @@ public class EnvironmentSetup : MonoBehaviour
             ElevationValues[20][i] = (float)MapTokens.Path;
         }
         #endregion
+    }
+
+    public GameObject GetHomeObjectAt(Vector3 position)
+    {
+        // note: won't need this until we have multiple homes, and until we figure out what 'close' means...
+        //if(CurrentHomePoint == position)
+        //{
+        //    return Home;
+        //}
+        //else
+        //{
+        //    return null;
+        //}
+
+        return CurrentHome;
     }
 }

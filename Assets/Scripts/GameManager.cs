@@ -26,7 +26,7 @@ public class GameManager : MonoBehaviour
     public int EnemyCountInWave = 10;
     private int RemainingEnemies = 10;
 
-    public int CurrentWave = 20;
+    public int CurrentWave = 0;
 
     // Start is called before the first frame update
     void Start()
@@ -73,6 +73,7 @@ public class GameManager : MonoBehaviour
     private void HandleSessionStart()
     {
         // starting the level, reset any numbers, then start the wave
+        RefreshHomeHP();
 
         // moved this to be button-based
         //CurrentState = GameState.WaveStart;
@@ -82,6 +83,8 @@ public class GameManager : MonoBehaviour
     {
         // start the wave variables
         enemyTemplateForThisWave = EnemyObject.GetRandomEnemyProperties(powerLevel);
+
+        RemainingEnemies = EnemyCountInWave;
 
         // then set the wave to active
         CurrentState = GameState.WaveActive;
@@ -127,16 +130,39 @@ public class GameManager : MonoBehaviour
 
     public void EnemyHitHome(GameObject o)
     {
+        GameObject h = EnvironmentSetup.CurrentEnvironment.GetHomeObjectAt(o.transform.position);
+
         // reduce HP of home
-        
+        h.GetComponent<HomeScript>().HPCurrent -= o.GetComponent<EnemyObject>().DmgCurrent;
+
+        // update the label
+        RefreshHomeHP();
 
         // destroy enemy object
         Destroy(o);
+
+        if(h.GetComponent<HomeScript>().HPCurrent <= 0)
+        {
+            CurrentState = GameState.WaveFailed;
+        }
+    }
+
+    private void RefreshHomeHP()
+    {
+        UIManager.CurrentUIManager.txtHomeHP.text = "HP: " + EnvironmentSetup.CurrentEnvironment.CurrentHome.GetComponent<HomeScript>().HPCurrent;
     }
 
     public void StartWaveClick()
     {
-        CurrentState = GameState.WaveStart;
+        if(CurrentState == GameState.SessionStart)
+        {
+            CurrentState = GameState.WaveStart;
+        }
+
+        if(CurrentState == GameState.WaveActive)
+        {
+            CurrentState = GameState.WaveStart;
+        }
     }
     private void HandleWaveFailed()
     {

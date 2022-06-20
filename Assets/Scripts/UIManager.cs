@@ -28,6 +28,8 @@ public class UIManager : MonoBehaviour
     public TMP_Text txtSpeed;
     public TMP_Text txtArmor;
 
+    public TMP_Text txtHomeHP;
+
     // Start is called before the first frame update
     void Start()
     {

@@ -51,9 +51,24 @@ public class EnemyObject : MonoBehaviour
         set;
     }
 
+    public int DmgMax
+    {
+        get;
+        set;
+    }
+    public int DmgCurrent
+    {
+        get;
+        set;
+    }
+
+
     // Start is called before the first frame update
     void Start()
     {
+        // change later?
+        DmgMax = 1;
+        DmgCurrent = 1;
     }
 
     // Update is called once per frame
