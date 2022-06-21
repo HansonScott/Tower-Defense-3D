@@ -20,6 +20,9 @@ public class TravelingManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        // shouldn't need this if the entire game object is destoryed...
+        //if (!this.gameObject.GetComponent<EnemyObject>().IsALive) { Destroy(this); return; }
+
         if(NextTarget == null || // catches the opening case with no target yet
             OnTargetNode())
         {

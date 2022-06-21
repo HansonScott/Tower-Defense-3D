@@ -96,10 +96,10 @@ public class TowerManager : MonoBehaviour
     public TargetConsistency CurrentTargetConsistency = TargetConsistency.Stick;
     public EnemyObject CurrentTarget;
 
-    public float RangeMax;
-    public float RangeCurrent;
+    public float RangeMax = 6;
+    public float RangeCurrent = 6;
 
-    public float ProjectileSpeed;
+    public float ProjectileSpeed = 0.03f;
 
     public int AttackDelayBase;
     public int AttackDelayCurrent;
@@ -116,18 +116,23 @@ public class TowerManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+        // be able to fire immediately
+        TicksSinceLastAttack = AttackDelayCurrent;
     }
 
     // Update is called once per frame
     void Update()
     {
+        // dont' do anything yet...
+        if(this.CurrentState == TowerState.Placing) { return; }
+
         // find next target
         List<EnemyObject> targets = FindAllEnemiesWithinRange();
 
         if(targets.Count > 0)
         {
-            if(CurrentTarget == null || // don't have a target yet
+            #region Pick a target
+            if (CurrentTarget == null || // don't have a target yet
                 !targets.Contains(CurrentTarget) || // last target is out of range
                 CurrentTargetConsistency == TargetConsistency.Jump) // or we want to re-evaluate anyway
             {
@@ -140,10 +145,10 @@ public class TowerManager : MonoBehaviour
                     CurrentTarget = DecideWhichTarget(targets);
                 }
             }
+            #endregion
 
             // turn towards target
             TurnTowardsTarget(CurrentTarget.transform.position);
-
 
             // check timing for attack
             if(TicksSinceLastAttack > AttackDelayCurrent)
@@ -152,10 +157,11 @@ public class TowerManager : MonoBehaviour
                 AttackTarget(CurrentTarget);
                 TicksSinceLastAttack = 0;
             }
-
-            // and count towards our next attack
-            TicksSinceLastAttack++;
-
+            else
+            {
+                // and count towards our next attack
+                TicksSinceLastAttack++;
+            }
         }
     }
 
@@ -164,7 +170,7 @@ public class TowerManager : MonoBehaviour
         EnemyObject[] enemies = EnvironmentManager.CurrentEnvironment.GetAllEnemies();
         List<EnemyObject> enemiesWithinRange = new();
 
-        if(enemies.Length > 1)
+        if(enemies.Length > 0)
         {
             foreach(EnemyObject e in enemies)
             {
@@ -239,20 +245,11 @@ public class TowerManager : MonoBehaviour
 
     private void TurnTowardsTarget(Vector3 targetPosition)
     {
+        // get the difference between tower and enemy target
         Vector3 targetDirection = targetPosition - transform.position;
 
-        // The step size is equal to speed times frame time.
-        // NOTE: if we want an incremental moving, then lower the turn speed
-        float singleStep = TurnSpeed * Time.deltaTime;
-
-        // Rotate the forward vector towards the target direction by one step
-        Vector3 newDirection = Vector3.RotateTowards(transform.forward, targetDirection, singleStep, 0.0f);
-
-        // Draw a ray pointing at our target in
-        //Debug.DrawRay(transform.position, newDirection, Color.red);
-
-        // Calculate a rotation a step closer to the target and applies rotation to this object
-        transform.rotation = Quaternion.LookRotation(newDirection);
+        // applies rotation to this tower, adjusting by -90 for some reason...
+        transform.rotation = Quaternion.LookRotation(targetDirection) * Quaternion.Euler(0,-90,0);
     }
 
     private void AttackTarget(EnemyObject e)
@@ -267,6 +264,7 @@ public class TowerManager : MonoBehaviour
                     ProjectileManager pm = projectileBullet.GetComponent<ProjectileManager>();
                     pm.ApplyPropertiesFromSource(this.gameObject);
                     pm.ApplyTargetEnemy(e);
+                    pm.CurrentState = ProjectileState.Traveling;
                     break;
                 case AttackType.Laser:
                     break;

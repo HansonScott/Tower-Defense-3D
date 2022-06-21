@@ -18,6 +18,8 @@ public class GameManager : MonoBehaviour
 
     public GameState CurrentState = GameState.SessionMenu;
 
+    public int CurrentScore = 0;
+
     public EnemyObject EnemyTemplate;
     private Color enemyTemplateForThisWave;
 
@@ -88,6 +90,7 @@ public class GameManager : MonoBehaviour
 
         // then set the wave to active
         CurrentState = GameState.WaveActive;
+        TicksSinceLastSpawn = SpawnDelay; // set initial enemy to spawn immediately
     }
 
     private void HandleWaveActive()

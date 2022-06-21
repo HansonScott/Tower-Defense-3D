@@ -18,6 +18,8 @@ public class UIManager : MonoBehaviour
     public Camera MainCamera;
     public GameObject CurrentlySelectedTower;
     public GameObject Tower01;
+    public GameObject BulletTemplate;
+
     public Material ValidTowerMaterial;
     public Material InvalidTowerMaterial;
 
@@ -27,6 +29,8 @@ public class UIManager : MonoBehaviour
     public TMP_Text txtHP;
     public TMP_Text txtSpeed;
     public TMP_Text txtArmor;
+
+    public EnemyObject EnemySourceForInfoBox;
 
     public TMP_Text txtHomeHP;
 
@@ -77,10 +81,18 @@ public class UIManager : MonoBehaviour
 
         if(EnvironmentManager.IsValidTowerPlacement(CurrentlySelectedTower))
         {
+            // NOTE: need to move this to a library or reference or factory, etc.
+            AttackEffect ae = Instantiate<AttackEffect>(BulletTemplate.GetComponent<AttackEffect>());
+            CurrentlySelectedTower.GetComponent<TowerManager>().AttackEffects.Add(ae);
+
             bool worked = EnvironmentManager.CurrentEnvironment.PlaceNewTower(CurrentlySelectedTower);
 
             if(worked)
             {
+                // remove the template
+                Destroy(CurrentlySelectedTower);
+
+                // and set our UI back to normal
                 CurrentUIState = UIState.Normal;
             }
         }
@@ -125,22 +137,42 @@ public class UIManager : MonoBehaviour
 
     }
 
-    private void HandleEnemyInfoClick(GameObject gameObject)
+    private void HandleEnemyInfoClick(GameObject o)
     {
-        if(gameObject != null &&
-            gameObject.GetComponent<EnemyObject>() != null)
+        if (o != null &&
+            o.GetComponent<EnemyObject>() != null)
         {
-            EnemyObject e = gameObject.GetComponent<EnemyObject>();
-            txtHP.text = "HP: " + e.HPCurrent + " / " + e.HPMax;
-            txtSpeed.text = "Speed: " + (e.SpeedCurrent * 100); // instead of a decimal...
-            txtArmor.text = "Armor: " + e.ArmorCurrent;
+            EnemySourceForInfoBox = o.GetComponent<EnemyObject>();
+            RefreshEnemyInfoBox();
+        }
+
+        // enable the enemy info box
+
+    }
+
+    public void RefreshEnemyInfoBox()
+    {
+        if(EnemySourceForInfoBox != null)
+        {
+            txtHP.text = "HP: " + EnemySourceForInfoBox.HPCurrent + " / " + EnemySourceForInfoBox.HPMax;
+            txtSpeed.text = "Speed: " + (EnemySourceForInfoBox.SpeedCurrent * 100); // instead of a decimal...
+            txtArmor.text = "Armor: " + EnemySourceForInfoBox.ArmorCurrent;
 
             // list immunities / specials
 
             // color labels if status effects active, etc.
 
+        }
+        else
+        {
+            EnemyInfoBox.SetActive(false);
+            //txtHP.text = "HP: X / Y";
+            //txtSpeed.text = "Speed: S";
+            //txtArmor.text = "Armor: A";
 
-            // enable the enemy info box
+            // list immunities / specials
+
+            // color labels if status effects active, etc.
 
         }
     }

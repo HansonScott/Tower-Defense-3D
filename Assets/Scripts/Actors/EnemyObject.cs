@@ -14,6 +14,8 @@ enum StatusEffect
 
 public class EnemyObject : MonoBehaviour
 {
+    public bool IsALive = true;
+
     public float NearbyDistance = 1.0f;
 
     #region Properties
@@ -22,10 +24,24 @@ public class EnemyObject : MonoBehaviour
         get;
         set;
     }
+    private float _HPCurrent;
     public float HPCurrent
     {
-        get;
-        set;
+        get { return _HPCurrent; }
+        set
+        {
+            _HPCurrent = value;
+
+            if(_HPCurrent <= 0)
+            {
+                // then we've died.
+                this.IsALive = false;
+
+                // and report this out to the game
+                GameManager.CurrentGame.CurrentScore += 1; // future: different points per enemy?
+                UIManager.CurrentUIManager.RefreshEnemyInfoBox();
+            }
+        }
     }
     public float SpeedMax
     {
@@ -72,7 +88,12 @@ public class EnemyObject : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        ApplyAnyActiveAttackEffects();
+        if (!IsALive) { Destroy(this.gameObject);}
+        else 
+        {
+            ApplyAnyActiveAttackEffects();
+        }
+
     }
 
     public static Color GetRandomEnemyProperties(int totalPower)
@@ -159,6 +180,11 @@ public class EnemyObject : MonoBehaviour
         }
 
         if (a.Duration > 0) { this.CurrentAttackEffects.Add(a); }
+
+        if(UIManager.CurrentUIManager.EnemySourceForInfoBox == this)
+        {
+            UIManager.CurrentUIManager.RefreshEnemyInfoBox();
+        }
     }
 
     private List<EnemyObject> GetNearbyEnemies(EnemyObject[] allEnemies) { return GetNearbyEnemies(allEnemies, NearbyDistance); }
@@ -169,6 +195,8 @@ public class EnemyObject : MonoBehaviour
         foreach(EnemyObject e in allEnemies)
         {
             if(e == this) { continue; }
+
+            if (e == null || !e.IsALive) { continue; }
 
             if(Vector3.Distance(e.transform.position, this.transform.position) < Range)
             {

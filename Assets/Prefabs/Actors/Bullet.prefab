@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 2067812004674293273}
   - component: {fileID: 2067812004674293272}
   - component: {fileID: 3050399344563762950}
+  - component: {fileID: 7780261546838563754}
   m_Layer: 0
   m_Name: Bullet
   m_TagString: Untagged
@@ -110,3 +111,32 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7ba0e40a19679b249b376f663d12d50e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  TargetEnemy: {fileID: 0}
+  TargetLocation: {x: 0, y: 0, z: 0}
+  TargetType: 0
+  ProjectileSpeed: 0.03
+  Dmg: 3
+  ProjectileType: 0
+  ProjectileEffects: []
+  HitDistanceMargin: 0.1
+--- !u!114 &7780261546838563754
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2067812004674293279}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b5baed08ca23c0f47a2e2e359ac0e91c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  AttackTypeBase: 0
+  AttackEffectBase: 0
+  Damage: 3
+  Duration: 0
+  ChainCountRemaining: 0
+  SplashDamagePercentage: 0
+  SplashRange: 0
+  SpeedReductionPercentage: 0
+  WeakenPercentage: 0

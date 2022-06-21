@@ -102,7 +102,13 @@ public class EnvironmentManager : MonoBehaviour
     internal bool PlaceNewTower(GameObject tower)
     {
         // create a new permanent tower at this tower's location
-        Towers.Add(GameObject.Instantiate(tower));
+        GameObject newTower = GameObject.Instantiate(tower);
+
+        // and turn the tower on
+        newTower.GetComponent<TowerManager>().CurrentState = TowerState.Seeking;
+
+        // and add to our list
+        Towers.Add(newTower);
 
         // if there's any reason it didnt' work, let the caller know
 
