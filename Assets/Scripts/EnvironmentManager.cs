@@ -12,7 +12,7 @@ public enum MapTokens
     Home = 10
 
 }
-public class EnvironmentSetup : MonoBehaviour
+public class EnvironmentManager : MonoBehaviour
 {
     public static Vector3 CurrentSpawnPoint;
     public static Vector3 CurrentHomePoint;
@@ -36,8 +36,9 @@ public class EnvironmentSetup : MonoBehaviour
 
     static Vector3[] CurrentPath = new Vector3[gridSize];
     static List<GameObject> Towers = new();
+    static List<EnemyObject> Enemies = new();
 
-    public static EnvironmentSetup CurrentEnvironment;
+    public static EnvironmentManager CurrentEnvironment;
 
     internal static Vector3 GetNextTarget(int NodeIndex)
     {
@@ -98,7 +99,7 @@ public class EnvironmentSetup : MonoBehaviour
         return true;
     }
 
-    internal static bool PlaceNewTower(GameObject tower)
+    internal bool PlaceNewTower(GameObject tower)
     {
         // create a new permanent tower at this tower's location
         Towers.Add(GameObject.Instantiate(tower));
@@ -107,6 +108,21 @@ public class EnvironmentSetup : MonoBehaviour
 
         // otherwise, it worked
         return true;
+    }
+
+    internal EnemyObject PlaceNewEnemy(EnemyObject enemyTemplate)
+    {
+        EnemyObject e = GameObject.Instantiate(enemyTemplate);
+        Enemies.Add(e);
+
+        // if there's any reason it didn't work, let the caller know
+
+        // otherwise, it worked
+        return e;
+    }
+    internal EnemyObject[] GetAllEnemies()
+    {
+        return Enemies.ToArray();
     }
 
     // Update is called once per frame

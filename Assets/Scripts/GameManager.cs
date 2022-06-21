@@ -22,7 +22,7 @@ public class GameManager : MonoBehaviour
     private Color enemyTemplateForThisWave;
 
     public int TicksSinceLastSpawn = 0;
-    public int SpawnDelay = 1000;
+    public int SpawnDelay = 3000;
     public int EnemyCountInWave = 10;
     private int RemainingEnemies = 10;
 
@@ -97,13 +97,13 @@ public class GameManager : MonoBehaviour
         // check for spawn delay
         if (TicksSinceLastSpawn > SpawnDelay && RemainingEnemies > 0)
         {
-            EnemyObject e = Instantiate<EnemyObject>(EnemyTemplate);
+            EnemyObject e = EnvironmentManager.CurrentEnvironment.PlaceNewEnemy(EnemyTemplate);
 
             // do anything to this particular one?
             e.gameObject.GetComponent<MeshRenderer>().material.color = enemyTemplateForThisWave;
 
             e.ApplyPropertiesFromColor(enemyTemplateForThisWave);
-            e.transform.position = EnvironmentSetup.CurrentSpawnPoint;
+            e.transform.position = EnvironmentManager.CurrentSpawnPoint;
 
             // reset for next enemy
             TicksSinceLastSpawn = 0;
@@ -130,7 +130,7 @@ public class GameManager : MonoBehaviour
 
     public void EnemyHitHome(GameObject o)
     {
-        GameObject h = EnvironmentSetup.CurrentEnvironment.GetHomeObjectAt(o.transform.position);
+        GameObject h = EnvironmentManager.CurrentEnvironment.GetHomeObjectAt(o.transform.position);
 
         // reduce HP of home
         h.GetComponent<HomeScript>().HPCurrent -= o.GetComponent<EnemyObject>().DmgCurrent;
@@ -149,7 +149,7 @@ public class GameManager : MonoBehaviour
 
     private void RefreshHomeHP()
     {
-        UIManager.CurrentUIManager.txtHomeHP.text = "HP: " + EnvironmentSetup.CurrentEnvironment.CurrentHome.GetComponent<HomeScript>().HPCurrent;
+        UIManager.CurrentUIManager.txtHomeHP.text = "HP: " + EnvironmentManager.CurrentEnvironment.CurrentHome.GetComponent<HomeScript>().HPCurrent;
     }
 
     public void StartWaveClick()

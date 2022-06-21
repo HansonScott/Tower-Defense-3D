@@ -5,9 +5,9 @@ using UnityEngine;
 
 public class HomeScript : MonoBehaviour
 {
-    public int HPMax = 100;
-    private int _HPCurrent = 100;
-    public int HPCurrent 
+    public float HPMax = 100;
+    private float _HPCurrent = 100;
+    public float HPCurrent 
     {
         get { return _HPCurrent; }
         set 

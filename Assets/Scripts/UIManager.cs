@@ -75,9 +75,9 @@ public class UIManager : MonoBehaviour
             return;
         }
 
-        if(EnvironmentSetup.IsValidTowerPlacement(CurrentlySelectedTower))
+        if(EnvironmentManager.IsValidTowerPlacement(CurrentlySelectedTower))
         {
-            bool worked = EnvironmentSetup.PlaceNewTower(CurrentlySelectedTower);
+            bool worked = EnvironmentManager.CurrentEnvironment.PlaceNewTower(CurrentlySelectedTower);
 
             if(worked)
             {
@@ -152,7 +152,7 @@ public class UIManager : MonoBehaviour
 
     private void ColorSelectedTowerBasedOnValidity()
     {
-        bool isValid = EnvironmentSetup.IsValidTowerPlacement(CurrentlySelectedTower);
+        bool isValid = EnvironmentManager.IsValidTowerPlacement(CurrentlySelectedTower);
         MeshRenderer[] mats = CurrentlySelectedTower.GetComponentsInChildren<MeshRenderer>();
 
         if (isValid)
