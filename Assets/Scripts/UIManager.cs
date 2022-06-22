@@ -17,7 +17,7 @@ public class UIManager : MonoBehaviour
 
     public Camera MainCamera;
     public GameObject CurrentlySelectedTower;
-    public GameObject Tower01;
+    public GameObject Tower01Template;
     public GameObject BulletTemplate;
 
     public Material ValidTowerMaterial;
@@ -25,12 +25,11 @@ public class UIManager : MonoBehaviour
 
     Vector3 latestObjectLocationInWorld = new Vector3();
 
+    public EnemyObject EnemySourceForInfoBox;
     public GameObject EnemyInfoBox;
     public TMP_Text txtHP;
     public TMP_Text txtSpeed;
     public TMP_Text txtArmor;
-
-    public EnemyObject EnemySourceForInfoBox;
 
     public TMP_Text txtHomeHP;
     public TMP_Text txtWave;
@@ -266,7 +265,7 @@ public class UIManager : MonoBehaviour
     private GameObject GetSelectedTower()
     {
         // instantiate the right tower based on what button was pressed
-        return Instantiate(Tower01);
+        return Instantiate(Tower01Template);
     }
 
 }

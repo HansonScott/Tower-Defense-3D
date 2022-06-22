@@ -25,11 +25,13 @@ public class GameManager : MonoBehaviour
         set { _CurrentScore = value; UIManager.CurrentUIManager.RefreshScoreLabel(_CurrentScore); }
     }
 
+    public int StartingMoney = 200;
+
     private int _CurrentMoney;
     public int CurrentMoney
     { 
         get { return _CurrentMoney; }
-        set { CurrentMoney = value; UIManager.CurrentUIManager.RefreshMoneyLabel(_CurrentMoney); }
+        set { _CurrentMoney = value; UIManager.CurrentUIManager.RefreshMoneyLabel(_CurrentMoney); }
     }
 
     public EnemyObject EnemyTemplate;
@@ -89,7 +91,8 @@ public class GameManager : MonoBehaviour
     {
         // starting the level, reset any numbers, then start the wave
         RefreshHomeHP();
-
+        CurrentMoney = StartingMoney;
+        
         // moved this to be button-based
         //CurrentState = GameState.WaveStart;
     }

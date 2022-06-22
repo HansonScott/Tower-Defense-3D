@@ -38,7 +38,8 @@ public class EnemyObject : MonoBehaviour
                 this.IsAlive = false;
 
                 // and report this out to the game
-                GameManager.CurrentGame.CurrentScore += 1; // future: different points per enemy?
+                GameManager.CurrentGame.CurrentScore += GameManager.CurrentGame.CurrentWave; // adds 1 point per enemy per wave (ex: wave 20 = each enemy is worth 20)
+                GameManager.CurrentGame.CurrentMoney += GameManager.CurrentGame.CurrentWave * 5; // adds $5 per enemy per wave (ex: wave 20 = each enemy is worth $100)
                 UIManager.CurrentUIManager.RefreshEnemyInfoBox();
             }
             else
@@ -335,13 +336,17 @@ public class EnemyObject : MonoBehaviour
 
         foreach(EnemyObject e in allEnemies)
         {
-            if(e == this) { continue; }
-
-            if (e == null || !e.IsAlive) { continue; }
-
-            if(Vector3.Distance(e.transform.position, this.transform.position) < Range)
+            lock(e)
             {
-                result.Add(e);
+                if (e == this) { continue; }
+
+                if (e == null || !e.IsAlive) { continue; }
+                if(this == null || !this.IsAlive || this.transform == null) { return null; }
+
+                if (Vector3.Distance(e.transform.position, this.transform.position) < Range)
+                {
+                    result.Add(e);
+                }
             }
         }
 
@@ -415,6 +420,7 @@ public class EnemyObject : MonoBehaviour
         {
             // spread fire to a neighbor
             List<EnemyObject> nearbyEnemies = GetNearbyEnemies(EnvironmentManager.CurrentEnvironment.GetAllEnemies());
+            if(nearbyEnemies == null) { return; }
 
             int target = Random.Range(0, nearbyEnemies.Count);
 
