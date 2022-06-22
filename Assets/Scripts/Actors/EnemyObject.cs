@@ -14,7 +14,7 @@ enum StatusEffect
 
 public class EnemyObject : MonoBehaviour
 {
-    public bool IsALive = true;
+    public bool IsAlive = true;
 
     public float NearbyDistance = 1.0f;
 
@@ -35,14 +35,19 @@ public class EnemyObject : MonoBehaviour
             if(_HPCurrent <= 0)
             {
                 // then we've died.
-                this.IsALive = false;
+                this.IsAlive = false;
 
                 // and report this out to the game
                 GameManager.CurrentGame.CurrentScore += 1; // future: different points per enemy?
                 UIManager.CurrentUIManager.RefreshEnemyInfoBox();
             }
+            else
+            {
+                UpdateHealthBar(HPCurrent, HPMax);
+            }
         }
     }
+
     public float SpeedMax
     {
         get;
@@ -88,35 +93,171 @@ public class EnemyObject : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (!IsALive) { Destroy(this.gameObject);}
+        if (!IsAlive) { Destroy(this.gameObject);}
         else 
         {
             ApplyAnyActiveAttackEffects();
         }
 
     }
+    private void UpdateHealthBar(float c, float m)
+    {
+        if(gameObject == null) { return; }
+
+        Transform healthBar = gameObject.transform.GetChild(0);
+
+        if(c == m) 
+        {
+            // make it invisible
+            healthBar.gameObject.SetActive(false);
+        }
+        else
+        {
+            // make it visible
+            healthBar.gameObject.SetActive(true);
+
+            // adjust width (x) as a percentage (it defaults to 1)
+            float percentHealth = (HPCurrent / HPMax);
+            healthBar.localScale = new Vector3(percentHealth, healthBar.localScale.y, healthBar.localScale.z);
+
+            float newR = 0;
+            float newG = 0;
+            float newB = 0;
+
+            // adjust color as a percentage (blue => green => yellow => orange => red)
+            // blue     (100-80) =  0,0,255
+            // green    (79-60)  =  0,255,0
+            // yellow   (59-40)  =  255,255,0
+            // orange   (39-20)  =  255,175,0
+            // red      (19-0)   =  255,0,0
+
+            #region Option 1: chunks - simple, but not elegant
+            //if (percentHealth > .8)
+            //{
+            //    newR = 0;
+            //    newG = 0;
+            //    newB = 255;
+            //}
+            //else if (percentHealth > .6)
+            //{
+            //    newR = 0;
+            //    newG = 255;
+            //    newB = 0;
+            //}
+            //else if (percentHealth > .4)
+            //{
+            //    newR = 255;
+            //    newG = 255;
+            //    newB = 0;
+            //}
+            //else if (percentHealth > .2)
+            //{
+            //    newR = 255;
+            //    newG = 175;
+            //    newB = 0;
+            //}
+            //else //(newX > 0)
+            //{
+            //    newR = 255;
+            //    newG = 0;
+            //    newB = 0;
+            //}
+            #endregion
+
+            #region Option2: Gradient w/ chunks
+            #region red
+            if (percentHealth > .6)
+            {
+                // red moves from 0 to 0
+                newR = 0;
+            }
+            else if (percentHealth > .4)
+            {
+                // red moves from 0 to 255
+                newR = (1f - ((percentHealth - 0.6f) * 5f)) * 255f;
+            }
+            else if (percentHealth > .2)
+            {
+                // red moves from 255 to 255
+                newR = 255;
+            }
+            else //(newX > 0)
+            {
+                // red moves from 255 to 255
+                newR = 255;
+            }
+            #endregion
+            #region green
+            if (percentHealth > .6)
+            {
+                // moves from 0 to 255
+                newG = (1 - ((percentHealth - 0.8f) * 5f)) * 255f;
+            }
+            else if (percentHealth > .4)
+            {
+                // from 255 to 255
+                newG = 255;
+            }
+            else if (percentHealth > .2)
+            {
+                // from 255 to 175
+                newG = 175 + (((percentHealth - 0.5f) * 5f) * (255 - 175));
+            }
+            else //(newX > 0)
+            {
+                // from 175 to 0
+                newG = (((percentHealth - 0.5f) * 5f) * 175);
+            }
+            #endregion
+            #region Blue
+            // blue
+            if (percentHealth > .6)
+            {
+                // from 255 to 0
+                newB = ((percentHealth - 0.6f) * 5f) * 255f;
+            }
+            else if (percentHealth > .4)
+            {
+                newB = 0;
+            }
+            else if (percentHealth > .2)
+            {
+                newB = 0;
+            }
+            else //(newX > 0)
+            {
+                newB = 0;
+            }
+            #endregion
+            #endregion
+        
+            Color newColor = new Color(newR, newG, newB, 0.0f);
+            healthBar.gameObject.GetComponent<MeshRenderer>().material.color = newColor;
+        }
+    }
+
 
     public static Color GetRandomEnemyProperties(int totalPower)
     {
-        int red = Mathf.Clamp(Random.Range(1, totalPower), 0, 255);
-        int green = (int)Mathf.Clamp(Random.Range(1, totalPower - red), 0, 255);
-        int blue = Mathf.Clamp(Random.Range(0, (totalPower - red - green)), 0, 255);
+        float red = Mathf.Clamp(Random.Range(1, totalPower), 0, 255);
+        float green = (int)Mathf.Clamp(Random.Range(1, totalPower - red), 0, 255);
+        float blue = Mathf.Clamp(Random.Range(0, (totalPower - red - green)), 0, 255);
 
         //Color result = new Color(red, green, blue);
         //Color result = new Color((red / 255), (green / 255), (blue / 255)); // seems to be not the right scale, examples in code ref are between 0 and 1 for each...
-        Color result = new Color((red / 25), (green / 25), (blue / 25)); // guessed at the scale, not sure why 25 results in color change...
+        Color result = new Color((red / 25f), (green / 25f), (blue / 25f)); // guessed at the scale, not sure why 25 results in color change...
         return result;
     }
 
     internal void ApplyPropertiesFromColor(Color c)
     {
-        this.HPMax = (int)c.r;
+        this.HPMax = (float)c.r;
         this.HPCurrent = HPMax;
 
         this.SpeedMax = 0.01f + (((c.g / 255) * 2) / 100); // percentage of max, weighted twice, then divided into thousandths, which is the movement norm.
         this.SpeedCurrent = this.SpeedMax;
 
-        this.ArmorMax = (int)c.b;
+        this.ArmorMax = (float)c.b;
         this.ArmorCurrent = this.ArmorMax;
     }
 
@@ -196,7 +337,7 @@ public class EnemyObject : MonoBehaviour
         {
             if(e == this) { continue; }
 
-            if (e == null || !e.IsALive) { continue; }
+            if (e == null || !e.IsAlive) { continue; }
 
             if(Vector3.Distance(e.transform.position, this.transform.position) < Range)
             {

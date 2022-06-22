@@ -33,6 +33,9 @@ public class UIManager : MonoBehaviour
     public EnemyObject EnemySourceForInfoBox;
 
     public TMP_Text txtHomeHP;
+    public TMP_Text txtWave;
+    public TMP_Text txtScore;
+    public TMP_Text txtMoney;
 
     // Start is called before the first frame update
     void Start()
@@ -69,6 +72,20 @@ public class UIManager : MonoBehaviour
                 break;
         }
     }
+
+    internal void RefreshWaveLabel(int currentWave)
+    {
+        txtWave.text = "Wave: " + currentWave;
+    }
+    internal void RefreshScoreLabel(int currentScore)
+    {
+        txtScore.text = "Score: " + currentScore;
+    }
+    internal void RefreshMoneyLabel(int currentMoney)
+    {
+        txtMoney.text = "$" + currentMoney;
+    }
+
 
     private void HandlePlaceTowerClick()
     {

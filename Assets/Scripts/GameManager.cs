@@ -18,7 +18,19 @@ public class GameManager : MonoBehaviour
 
     public GameState CurrentState = GameState.SessionMenu;
 
-    public int CurrentScore = 0;
+    private int _CurrentScore;
+    public int CurrentScore
+    {
+        get { return _CurrentScore; }
+        set { _CurrentScore = value; UIManager.CurrentUIManager.RefreshScoreLabel(_CurrentScore); }
+    }
+
+    private int _CurrentMoney;
+    public int CurrentMoney
+    { 
+        get { return _CurrentMoney; }
+        set { CurrentMoney = value; UIManager.CurrentUIManager.RefreshMoneyLabel(_CurrentMoney); }
+    }
 
     public EnemyObject EnemyTemplate;
     private Color enemyTemplateForThisWave;
@@ -49,6 +61,7 @@ public class GameManager : MonoBehaviour
                 break;
             case GameState.WaveStart:
                 HandleWaveStart(++CurrentWave * 10);
+                UIManager.CurrentUIManager.RefreshWaveLabel(CurrentWave);
                 break;
             case GameState.WaveActive:
                 HandleWaveActive();
@@ -98,7 +111,7 @@ public class GameManager : MonoBehaviour
         // check for enemy spawn count, etc.
 
         // check for spawn delay
-        if (TicksSinceLastSpawn > SpawnDelay && RemainingEnemies > 0)
+        if (TicksSinceLastSpawn >= SpawnDelay && RemainingEnemies > 0)
         {
             EnemyObject e = EnvironmentManager.CurrentEnvironment.PlaceNewEnemy(EnemyTemplate);
 
