@@ -1,6 +1,7 @@
 using System;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public enum UIState
 {
@@ -35,6 +36,9 @@ public class UIManager : MonoBehaviour
     public TMP_Text txtWave;
     public TMP_Text txtScore;
     public TMP_Text txtMoney;
+
+    public Button btnWave;
+    public Button btnCanon;
 
     // Start is called before the first frame update
     void Start()

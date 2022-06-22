@@ -20,10 +20,13 @@ public class TravelingManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (GameManager.CurrentGame.CurrentState == GameState.WaveFailed) { return; } // dont' do anything at this time
+
+
         // shouldn't need this if the entire game object is destoryed...
         //if (!this.gameObject.GetComponent<EnemyObject>().IsALive) { Destroy(this); return; }
 
-        if(NextTarget == null || // catches the opening case with no target yet
+        if (NextTarget == null || // catches the opening case with no target yet
             OnTargetNode())
         {
             // if on home node, then damage and end

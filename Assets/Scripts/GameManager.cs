@@ -37,12 +37,15 @@ public class GameManager : MonoBehaviour
     public EnemyObject EnemyTemplate;
     private Color enemyTemplateForThisWave;
 
+    public int TicksSinceNewWave = 0;
+    public int WaveDelay = 500;
+
     public int TicksSinceLastSpawn = 0;
-    public int SpawnDelay = 3000;
+    public int SpawnDelay = 100;
     public int EnemyCountInWave = 10;
     private int RemainingEnemies = 10;
 
-    public int CurrentWave = 0;
+    public int CurrentWave = 1;
 
     // Start is called before the first frame update
     void Start()
@@ -62,8 +65,9 @@ public class GameManager : MonoBehaviour
                 HandleSessionStart();
                 break;
             case GameState.WaveStart:
-                HandleWaveStart(++CurrentWave * 10);
+                HandleWaveStart();
                 UIManager.CurrentUIManager.RefreshWaveLabel(CurrentWave);
+                UIManager.CurrentUIManager.btnWave.enabled = false;
                 break;
             case GameState.WaveActive:
                 HandleWaveActive();
@@ -97,16 +101,25 @@ public class GameManager : MonoBehaviour
         //CurrentState = GameState.WaveStart;
     }
 
-    private void HandleWaveStart(int powerLevel)
+    private void HandleWaveStart()
     {
-        // start the wave variables
-        enemyTemplateForThisWave = EnemyObject.GetRandomEnemyProperties(powerLevel);
+        if(TicksSinceNewWave > WaveDelay)
+        {
+            int powerLevel = ++CurrentWave * 100;
 
-        RemainingEnemies = EnemyCountInWave;
+            // start the wave variables
+            enemyTemplateForThisWave = EnemyObject.GetRandomEnemyProperties(powerLevel);
 
-        // then set the wave to active
-        CurrentState = GameState.WaveActive;
-        TicksSinceLastSpawn = SpawnDelay; // set initial enemy to spawn immediately
+            RemainingEnemies = EnemyCountInWave;
+
+            // then set the wave to active
+            CurrentState = GameState.WaveActive;
+            TicksSinceLastSpawn = SpawnDelay; // set initial enemy to spawn immediately
+        }
+        else
+        {
+            TicksSinceNewWave++;
+        }
     }
 
     private void HandleWaveActive()
@@ -134,6 +147,16 @@ public class GameManager : MonoBehaviour
         }
 
         // check for all enemies spawned, then pause wave
+        if(RemainingEnemies == 0)
+        {
+            CurrentState = GameState.WaveStart;
+            TicksSinceNewWave = 0;
+
+            // add more money for each wave cleared
+            CurrentMoney += CurrentWave * 25;
+
+            //UIManager.CurrentUIManager.btnWave.enabled = true;
+        }
     }
 
     private void HandleWavePause()
@@ -173,6 +196,8 @@ public class GameManager : MonoBehaviour
 
     public void StartWaveClick()
     {
+        UIManager.CurrentUIManager.btnWave.gameObject.SetActive(false);
+
         if(CurrentState == GameState.SessionStart)
         {
             CurrentState = GameState.WaveStart;

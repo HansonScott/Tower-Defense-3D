@@ -94,6 +94,8 @@ public class EnemyObject : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if(GameManager.CurrentGame.CurrentState == GameState.WaveFailed) { return; } // dont' do anything at this time
+
         if (!IsAlive) { Destroy(this.gameObject);}
         else 
         {
@@ -244,18 +246,22 @@ public class EnemyObject : MonoBehaviour
         float green = (int)Mathf.Clamp(Random.Range(1, totalPower - red), 0, 255);
         float blue = Mathf.Clamp(Random.Range(0, (totalPower - red - green)), 0, 255);
 
-        //Color result = new Color(red, green, blue);
+        Color result = new Color();
+        result.r = (red / 255);
+        result.g = (green / 255);
+        result.b = (blue / 255);
+
         //Color result = new Color((red / 255), (green / 255), (blue / 255)); // seems to be not the right scale, examples in code ref are between 0 and 1 for each...
-        Color result = new Color((red / 25f), (green / 25f), (blue / 25f)); // guessed at the scale, not sure why 25 results in color change...
+        //Color result = new Color((red / 25f), (green / 25f), (blue / 25f)); // guessed at the scale, not sure why 25 results in color change...
         return result;
     }
 
     internal void ApplyPropertiesFromColor(Color c)
     {
-        this.HPMax = (float)c.r;
+        this.HPMax = (float)c.r * 100;
         this.HPCurrent = HPMax;
-
-        this.SpeedMax = 0.01f + (((c.g / 255) * 2) / 100); // percentage of max, weighted twice, then divided into thousandths, which is the movement norm.
+       
+        this.SpeedMax = 0.01f + (c.g / 20); // g between 0 and 1, so /15 = 0 and .125
         this.SpeedCurrent = this.SpeedMax;
 
         this.ArmorMax = (float)c.b;
@@ -267,10 +273,10 @@ public class EnemyObject : MonoBehaviour
         switch(a.AttackEffectBase)
         {
             case EffectType.None:
-                this.HPCurrent -= a.Damage;
+                this.HPCurrent -= Mathf.Max((a.Damage - this.ArmorCurrent), 1); // armor can block all but 1 dmg
                 break;
             case EffectType.Aflame:
-                this.HPCurrent -= a.Damage;
+                this.HPCurrent -= a.Damage; // armor doesn't block fire
 
                 // look to spread the fire to neighboring enemies
                 LookToSpreadFireToNeighbor(a);
@@ -283,7 +289,7 @@ public class EnemyObject : MonoBehaviour
                 // nothing special at this point, but keep track, below
                 break;
             case EffectType.Poison:
-                this.HPCurrent -= a.Damage;
+                this.HPCurrent -= a.Damage; // armor doesn't block poison
                 break;
             case EffectType.Stun:
                 this.SpeedCurrent = 0;

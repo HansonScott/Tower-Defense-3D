@@ -69,8 +69,10 @@ public class ProjectileManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (GameManager.CurrentGame.CurrentState == GameState.WaveFailed) { return; } // dont' do anything at this time
+
         // first check that our destination still exists, or just quit
-        if(TargetType == TargetType.Enemy &&
+        if (TargetType == TargetType.Enemy &&
             TargetEnemy == null || TargetEnemy.gameObject == null) { Destroy(this); Destroy(this.gameObject); }
 
 

@@ -346,7 +346,7 @@ MonoBehaviour:
   CurrentTarget: {fileID: 0}
   RangeMax: 6
   RangeCurrent: 6
-  ProjectileSpeed: 0.03
+  ProjectileSpeed: 0.3
   AttackDelayBase: 100
   AttackDelayCurrent: 100
   TurnSpeed: 100

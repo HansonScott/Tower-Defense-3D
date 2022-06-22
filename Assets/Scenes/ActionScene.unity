@@ -160,7 +160,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 35, y: -21}
+  m_AnchoredPosition: {x: 35, y: -56}
   m_SizeDelta: {x: 57, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &89720734
@@ -459,7 +459,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 75, y: -105}
+  m_AnchoredPosition: {x: 75, y: -137}
   m_SizeDelta: {x: 143.2, y: 187.8}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &396895306
@@ -699,7 +699,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 135, y: -21}
+  m_AnchoredPosition: {x: 71, y: -21}
   m_SizeDelta: {x: 127.20001, y: 27.699997}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &740762426
@@ -831,19 +831,21 @@ MonoBehaviour:
   CurrentUIState: 0
   MainCamera: {fileID: 1539836728}
   CurrentlySelectedTower: {fileID: 0}
-  Tower01: {fileID: 8246274975653233750, guid: 99f2befcb3ea9e64688e5b0f20004c75, type: 3}
+  Tower01Template: {fileID: 8246274975653233750, guid: 99f2befcb3ea9e64688e5b0f20004c75, type: 3}
   BulletTemplate: {fileID: 2067812004674293279, guid: d8ffa097fd3303d448abbeac529a8bf8, type: 3}
   ValidTowerMaterial: {fileID: 2100000, guid: 4c43e0ac46ac1e342976c5fd559b381c, type: 2}
   InvalidTowerMaterial: {fileID: 2100000, guid: 6d63d852cb1d772489d5663459d50cc3, type: 2}
+  EnemySourceForInfoBox: {fileID: 0}
   EnemyInfoBox: {fileID: 281872095}
   txtHP: {fileID: 149346052}
   txtSpeed: {fileID: 1682036779}
   txtArmor: {fileID: 1430261285}
-  EnemySourceForInfoBox: {fileID: 0}
   txtHomeHP: {fileID: 396895308}
   txtWave: {fileID: 740762426}
   txtScore: {fileID: 1843672305}
   txtMoney: {fileID: 1106698893}
+  btnWave: {fileID: 89720734}
+  btnCanon: {fileID: 1716440460}
 --- !u!4 &874421075
 Transform:
   m_ObjectHideFlags: 0
@@ -1377,7 +1379,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -177, y: -54}
+  m_AnchoredPosition: {x: -71, y: -54}
   m_SizeDelta: {x: 127.20001, y: 27.699997}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1106698893
@@ -1971,7 +1973,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -52, y: -20}
+  m_AnchoredPosition: {x: -52, y: -91}
   m_SizeDelta: {x: 94.4, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1716440460
@@ -2113,11 +2115,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   CurrentState: 0
+  StartingMoney: 200
   EnemyTemplate: {fileID: 2786285845032917463, guid: 35c7efa66eecb0141998f0955ff6900c, type: 3}
+  TicksSinceNewWave: 0
+  WaveDelay: 500
   TicksSinceLastSpawn: 300
-  SpawnDelay: 300
+  SpawnDelay: 100
   EnemyCountInWave: 10
-  CurrentWave: 0
+  CurrentWave: 1
 --- !u!1 &1843672303
 GameObject:
   m_ObjectHideFlags: 0
@@ -2153,7 +2158,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -177, y: -21}
+  m_AnchoredPosition: {x: -71, y: -21}
   m_SizeDelta: {x: 127.20001, y: 27.699997}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1843672305
