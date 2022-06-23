@@ -94,7 +94,8 @@ public class EnemyObject : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(GameManager.CurrentGame.CurrentState == GameState.WaveFailed) { return; } // dont' do anything at this time
+        if(GameManager.CurrentGame == null ||
+            GameManager.CurrentGame.CurrentState == GameState.WaveFailed) { return; } // dont' do anything at this time
 
         if (!IsAlive) { Destroy(this.gameObject);}
         else 
@@ -261,7 +262,7 @@ public class EnemyObject : MonoBehaviour
         this.HPMax = (float)c.r * 100;
         this.HPCurrent = HPMax;
        
-        this.SpeedMax = 0.01f + (c.g / 20); // g between 0 and 1, so /15 = 0 and .125
+        this.SpeedMax = 1f + (c.g / 10);
         this.SpeedCurrent = this.SpeedMax;
 
         this.ArmorMax = (float)c.b;

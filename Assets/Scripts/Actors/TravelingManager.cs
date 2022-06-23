@@ -29,18 +29,11 @@ public class TravelingManager : MonoBehaviour
         if (NextTarget == null || // catches the opening case with no target yet
             OnTargetNode())
         {
-            // if on home node, then damage and end
-            if(TargetNode == EnvironmentManager.HomeNode)
-            {
-                // then we've reached the home, damage it
-
-                // To Do...
-            }
-
             // progress to next node
             NextTarget = EnvironmentManager.GetNextTarget(TargetNode++);
 
-            if(NextTarget == new Vector3())
+            // if on home node, then damage and end
+            if (NextTarget == new Vector3())
             {
                 //then we've hit 'home'
                 HandleHomeTargetHit();
@@ -66,7 +59,7 @@ public class TravelingManager : MonoBehaviour
         move.y = 0; // no need to move vertically
 
         // normalize on speed
-        move = move.normalized * this.gameObject.GetComponent<EnemyObject>().SpeedCurrent;
+        move = move.normalized * this.gameObject.GetComponent<EnemyObject>().SpeedCurrent * Time.deltaTime;
 
         // move the enemy in that direction.
         this.transform.position += move;
@@ -74,7 +67,10 @@ public class TravelingManager : MonoBehaviour
 
     private void HandleHomeTargetHit()
     {
-        // don't do anything here, but tell the game manager what happened
-        GameManager.CurrentGame.EnemyHitHome(this.gameObject);
+        // tell the game manager to hit the home base
+        GameManager.CurrentGame.EnemyHitHome(this.gameObject.GetComponent<EnemyObject>().DmgCurrent, this.gameObject.transform.position);
+
+        // and we're done
+        Destroy(this.gameObject);
     }
 }

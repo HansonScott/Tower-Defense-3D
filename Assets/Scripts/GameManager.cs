@@ -27,7 +27,7 @@ public class GameManager : MonoBehaviour
 
     public int StartingMoney = 200;
 
-    private int _CurrentMoney;
+    private int _CurrentMoney = 0;
     public int CurrentMoney
     { 
         get { return _CurrentMoney; }
@@ -37,11 +37,11 @@ public class GameManager : MonoBehaviour
     public EnemyObject EnemyTemplate;
     private Color enemyTemplateForThisWave;
 
-    public int TicksSinceNewWave = 0;
-    public int WaveDelay = 500;
+    public float TimeSinceNewWave = 0;
+    public float WaveDelay = 10;
 
-    public int TicksSinceLastSpawn = 0;
-    public int SpawnDelay = 100;
+    public float TimeSinceLastSpawn = 0;
+    public float SpawnDelay = 1.5f;
     public int EnemyCountInWave = 10;
     private int RemainingEnemies = 10;
 
@@ -53,7 +53,7 @@ public class GameManager : MonoBehaviour
         CurrentGame = this;
     }
 
-    // Update is called once per frame
+    // Update is called once per frame(?)
     void Update()
     {
         switch(CurrentState)
@@ -103,7 +103,7 @@ public class GameManager : MonoBehaviour
 
     private void HandleWaveStart()
     {
-        if(TicksSinceNewWave > WaveDelay)
+        if(TimeSinceNewWave > WaveDelay)
         {
             int powerLevel = ++CurrentWave * 100;
 
@@ -114,11 +114,11 @@ public class GameManager : MonoBehaviour
 
             // then set the wave to active
             CurrentState = GameState.WaveActive;
-            TicksSinceLastSpawn = SpawnDelay; // set initial enemy to spawn immediately
+            TimeSinceLastSpawn = SpawnDelay; // set initial enemy to spawn immediately
         }
         else
         {
-            TicksSinceNewWave++;
+            TimeSinceNewWave += Time.deltaTime;
         }
     }
 
@@ -127,7 +127,7 @@ public class GameManager : MonoBehaviour
         // check for enemy spawn count, etc.
 
         // check for spawn delay
-        if (TicksSinceLastSpawn >= SpawnDelay && RemainingEnemies > 0)
+        if (TimeSinceLastSpawn >= SpawnDelay && RemainingEnemies > 0)
         {
             EnemyObject e = EnvironmentManager.CurrentEnvironment.PlaceNewEnemy(EnemyTemplate);
 
@@ -138,19 +138,19 @@ public class GameManager : MonoBehaviour
             e.transform.position = EnvironmentManager.CurrentSpawnPoint;
 
             // reset for next enemy
-            TicksSinceLastSpawn = 0;
+            TimeSinceLastSpawn = 0;
             RemainingEnemies--;
         }
         else
         {
-            TicksSinceLastSpawn++;
+            TimeSinceLastSpawn += Time.deltaTime;
         }
 
         // check for all enemies spawned, then pause wave
         if(RemainingEnemies == 0)
         {
             CurrentState = GameState.WaveStart;
-            TicksSinceNewWave = 0;
+            TimeSinceNewWave = 0;
 
             // add more money for each wave cleared
             CurrentMoney += CurrentWave * 25;
@@ -170,19 +170,18 @@ public class GameManager : MonoBehaviour
         CurrentState = GameState.SessionMenu;
     }
 
-    public void EnemyHitHome(GameObject o)
+    public void EnemyHitHome(float dmg, Vector3 homePosition)
     {
-        GameObject h = EnvironmentManager.CurrentEnvironment.GetHomeObjectAt(o.transform.position);
+        // find which home object
+        GameObject h = EnvironmentManager.CurrentEnvironment.GetHomeObjectAt(homePosition);
 
         // reduce HP of home
-        h.GetComponent<HomeScript>().HPCurrent -= o.GetComponent<EnemyObject>().DmgCurrent;
+        h.GetComponent<HomeScript>().HPCurrent -= dmg;
 
         // update the label
         RefreshHomeHP();
 
-        // destroy enemy object
-        Destroy(o);
-
+        // check for failed wave
         if(h.GetComponent<HomeScript>().HPCurrent <= 0)
         {
             CurrentState = GameState.WaveFailed;
@@ -201,8 +200,10 @@ public class GameManager : MonoBehaviour
         if(CurrentState == GameState.SessionStart)
         {
             CurrentState = GameState.WaveStart;
+            TimeSinceNewWave = WaveDelay; // start first wave immeditely
         }
 
+        // restart the next wave if we're active...(?)
         if(CurrentState == GameState.WaveActive)
         {
             CurrentState = GameState.WaveStart;

@@ -11,7 +11,6 @@ GameObject:
   - component: {fileID: 8847762823022019796}
   - component: {fileID: 7769953623666222505}
   - component: {fileID: 7860748839970259006}
-  - component: {fileID: 5349179684707627350}
   m_Layer: 0
   m_Name: SphereBase
   m_TagString: Untagged
@@ -84,19 +83,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!135 &5349179684707627350
-SphereCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2312068452579909089}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Radius: 0.5
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &4536973567114805388
 GameObject:
   m_ObjectHideFlags: 0
@@ -108,7 +94,6 @@ GameObject:
   - component: {fileID: 1596689413676191039}
   - component: {fileID: 7835248796797250367}
   - component: {fileID: 6464453416703542813}
-  - component: {fileID: 7941263590245168643}
   m_Layer: 0
   m_Name: CanonInterior
   m_TagString: Untagged
@@ -181,20 +166,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!136 &7941263590245168643
-CapsuleCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4536973567114805388}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  m_Radius: 0.5000001
-  m_Height: 2
-  m_Direction: 1
-  m_Center: {x: 0.000000059604645, y: 0, z: -0.00000008940697}
 --- !u!1 &6349110037684442877
 GameObject:
   m_ObjectHideFlags: 0
@@ -206,7 +177,6 @@ GameObject:
   - component: {fileID: 2183711850747816325}
   - component: {fileID: 9191269667428170146}
   - component: {fileID: 5121351469796951329}
-  - component: {fileID: 516051005044598025}
   m_Layer: 0
   m_Name: Canon
   m_TagString: Untagged
@@ -280,20 +250,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!136 &516051005044598025
-CapsuleCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6349110037684442877}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  m_Radius: 0.5000001
-  m_Height: 2
-  m_Direction: 1
-  m_Center: {x: 0.000000059604645, y: 0, z: -0.00000008940697}
 --- !u!1 &8246274975653233750
 GameObject:
   m_ObjectHideFlags: 0
@@ -346,9 +302,9 @@ MonoBehaviour:
   CurrentTarget: {fileID: 0}
   RangeMax: 6
   RangeCurrent: 6
-  ProjectileSpeed: 0.3
-  AttackDelayBase: 100
-  AttackDelayCurrent: 100
+  ProjectileSpeed: 10
+  AttackDelayBase: 0.3
+  AttackDelayCurrent: 0.3
   TurnSpeed: 100
   AttackEffects: []
   BulletTemplate: {fileID: 2067812004674293279, guid: d8ffa097fd3303d448abbeac529a8bf8, type: 3}

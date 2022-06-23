@@ -835,6 +835,7 @@ MonoBehaviour:
   BulletTemplate: {fileID: 2067812004674293279, guid: d8ffa097fd3303d448abbeac529a8bf8, type: 3}
   ValidTowerMaterial: {fileID: 2100000, guid: 4c43e0ac46ac1e342976c5fd559b381c, type: 2}
   InvalidTowerMaterial: {fileID: 2100000, guid: 6d63d852cb1d772489d5663459d50cc3, type: 2}
+  TowerCanonInteriorMaterial: {fileID: 2100000, guid: bae1018bfc2199b47bc708dfedd1d31d, type: 2}
   EnemySourceForInfoBox: {fileID: 0}
   EnemyInfoBox: {fileID: 281872095}
   txtHP: {fileID: 149346052}
@@ -2117,10 +2118,10 @@ MonoBehaviour:
   CurrentState: 0
   StartingMoney: 200
   EnemyTemplate: {fileID: 2786285845032917463, guid: 35c7efa66eecb0141998f0955ff6900c, type: 3}
-  TicksSinceNewWave: 0
+  TimeSinceNewWave: 0
   WaveDelay: 500
-  TicksSinceLastSpawn: 300
-  SpawnDelay: 100
+  TimeSinceLastSpawn: 0
+  SpawnDelay: 10
   EnemyCountInWave: 10
   CurrentWave: 1
 --- !u!1 &1843672303
@@ -2181,7 +2182,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'Score: '
+  m_text: 'Score: 0'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}

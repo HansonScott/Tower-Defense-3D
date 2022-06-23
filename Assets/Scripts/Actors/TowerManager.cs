@@ -99,11 +99,11 @@ public class TowerManager : MonoBehaviour
     public float RangeMax = 6;
     public float RangeCurrent = 6;
 
-    public float ProjectileSpeed = 0.3f;
+    public float ProjectileSpeed = 200f;
 
-    public int AttackDelayBase;
-    public int AttackDelayCurrent;
-    private int TicksSinceLastAttack;
+    public float AttackDelayBase;
+    public float AttackDelayCurrent;
+    private float TimeSinceLastAttack;
 
     public int TurnSpeed = 100;
 
@@ -117,7 +117,7 @@ public class TowerManager : MonoBehaviour
     void Start()
     {
         // be able to fire immediately
-        TicksSinceLastAttack = AttackDelayCurrent;
+        TimeSinceLastAttack = AttackDelayCurrent;
     }
 
     // Update is called once per frame
@@ -152,16 +152,16 @@ public class TowerManager : MonoBehaviour
             TurnTowardsTarget(CurrentTarget.transform.position);
 
             // check timing for attack
-            if(TicksSinceLastAttack > AttackDelayCurrent)
+            if(TimeSinceLastAttack > AttackDelayCurrent)
             {
                 // if can, attack
                 AttackTarget(CurrentTarget);
-                TicksSinceLastAttack = 0;
+                TimeSinceLastAttack = 0;
             }
             else
             {
                 // and count towards our next attack
-                TicksSinceLastAttack++;
+                TimeSinceLastAttack += Time.deltaTime;
             }
         }
     }
@@ -265,7 +265,7 @@ public class TowerManager : MonoBehaviour
                     ProjectileManager pm = projectileBullet.GetComponent<ProjectileManager>();
                     pm.ApplyPropertiesFromSource(this.gameObject);
                     pm.ApplyTargetEnemy(e);
-                    pm.CurrentState = ProjectileState.Traveling;
+                    pm.CurrentState = ProjectileState.Ready;
                     break;
                 case AttackType.Laser:
                     break;

@@ -23,6 +23,7 @@ public class UIManager : MonoBehaviour
 
     public Material ValidTowerMaterial;
     public Material InvalidTowerMaterial;
+    public Material TowerCanonInteriorMaterial;
 
     Vector3 latestObjectLocationInWorld = new Vector3();
 
@@ -174,9 +175,10 @@ public class UIManager : MonoBehaviour
     {
         if(EnemySourceForInfoBox != null)
         {
-            txtHP.text = "HP: " + EnemySourceForInfoBox.HPCurrent + " / " + EnemySourceForInfoBox.HPMax;
-            txtSpeed.text = "Speed: " + (EnemySourceForInfoBox.SpeedCurrent * 100); // instead of a decimal...
-            txtArmor.text = "Armor: " + EnemySourceForInfoBox.ArmorCurrent;
+            string DesiredFormat = "N1";
+            txtHP.text = "HP: " + EnemySourceForInfoBox.HPCurrent.ToString(DesiredFormat) + " / " + EnemySourceForInfoBox.HPMax.ToString(DesiredFormat);
+            txtSpeed.text = "Speed: " + (EnemySourceForInfoBox.SpeedCurrent * 100).ToString(DesiredFormat); // instead of a decimal...
+            txtArmor.text = "Armor: " + EnemySourceForInfoBox.ArmorCurrent.ToString(DesiredFormat);
 
             // list immunities / specials
 
@@ -212,7 +214,10 @@ public class UIManager : MonoBehaviour
             // color tower valid colors
             for (int i = 0; i < mats.Length; i++)
             {
-                mats[i].material.color = ValidTowerMaterial.color;
+                if(mats[i].name != "CanonInterior")
+                {
+                    mats[i].material.color = ValidTowerMaterial.color;
+                }
             }
         }
         else
@@ -220,7 +225,10 @@ public class UIManager : MonoBehaviour
             // color tower invalid colors
             for (int i = 0; i < mats.Length; i++)
             {
-                mats[i].material.color = InvalidTowerMaterial.color;
+                if (mats[i].name != "CanonInterior")
+                {
+                    mats[i].material.color = InvalidTowerMaterial.color;
+                }
             }
         }
     }

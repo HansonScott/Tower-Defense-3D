@@ -31,7 +31,8 @@ public class ProjectileManager : MonoBehaviour
     public AttackType ProjectileType;
     public List<AttackEffect> ProjectileEffects;
 
-    public float HitDistanceMargin = 0.2f;
+    public float HitDistanceMargin = 0.1f;
+    private float prevousDistanceToTarget;
 
     // Start is called before the first frame update
     void Start()
@@ -75,8 +76,13 @@ public class ProjectileManager : MonoBehaviour
         if (TargetType == TargetType.Enemy &&
             TargetEnemy == null || TargetEnemy.gameObject == null) { Destroy(this); Destroy(this.gameObject); }
 
-
-        if(CurrentState == ProjectileState.Traveling)
+        if (CurrentState == ProjectileState.Complete) { Destroy(this.gameObject); } // if we're done. quit
+        else if (CurrentState == ProjectileState.Ready)
+        {
+            // FIRE!
+            MoveTowardsTarget();
+        }
+        else if (CurrentState == ProjectileState.Traveling)
         {
             //if reached target, damage it
             if (ReachedTarget())
@@ -96,25 +102,48 @@ public class ProjectileManager : MonoBehaviour
         }
     }
 
+    private void OnTriggerEnter(Collider other)
+    {
+
+        if(other.gameObject == TargetEnemy.gameObject)
+        {
+            CurrentState = ProjectileState.Complete;
+            ApplyAttacks();
+            Destroy(this.gameObject);
+        }
+    }
+
     private void MoveTowardsTarget()
     {
-        // get the direction to the next target
-        Vector3 NextTarget = this.TargetEnemy.transform.position;
-        if(TargetType == TargetType.Location)
+        Vector3 NextTarget = new Vector3();
+        if (this.TargetEnemy != null)
+        {
+            NextTarget = this.TargetEnemy.transform.position;
+        }
+        else if (TargetType == TargetType.Location)
         {
             NextTarget = this.TargetLocation;
         }
 
+        if(NextTarget == new Vector3()) { return; }
+
+
+        #region Option 1: move - this causes UI skipping because it is basically teleporting from one position to another per update - NO GOOD
         Vector3 move = (NextTarget - this.transform.position);
 
-        //move.y = 0; // no need to move vertically
-
         // normalize on speed
-        move = move.normalized * ProjectileSpeed;
+        move = move.normalized * ProjectileSpeed * Time.deltaTime;
 
         // move the enemy in that direction.
         this.transform.position += move;
+        #endregion
 
+
+        // now we're traveling, let it fly
+        if(CurrentState == ProjectileState.Ready)
+        {
+            CurrentState = ProjectileState.Traveling;
+        }
     }
 
     private bool ReachedTarget()
@@ -125,12 +154,17 @@ public class ProjectileManager : MonoBehaviour
             {
                 return true;
             }
-
-            return (Vector3.Distance(TargetEnemy.transform.position, this.transform.position) < HitDistanceMargin);
+            float dist = Vector3.Distance(TargetEnemy.transform.position, this.transform.position);
+            if(prevousDistanceToTarget == 0) { prevousDistanceToTarget = dist; }
+            if(dist > prevousDistanceToTarget) { this.CurrentState = ProjectileState.Complete; } // if we're going away from our target, just complete
+            return dist < HitDistanceMargin;
         }
         else
         {
-            return (Vector3.Distance(TargetLocation, this.transform.position) < HitDistanceMargin);
+            float dist = Vector3.Distance(TargetLocation, this.transform.position);
+            if (prevousDistanceToTarget == 0) { prevousDistanceToTarget = dist; }
+            if (dist > prevousDistanceToTarget) { this.CurrentState = ProjectileState.Complete; } // if we're going away from our target, just complete
+            return dist < HitDistanceMargin;
         }
     }
 
