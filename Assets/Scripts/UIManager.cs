@@ -17,6 +17,8 @@ public class UIManager : MonoBehaviour
 
     public UIState CurrentUIState = UIState.Normal;
 
+    public GameManager CurrentGameManager;
+
     public Camera MainCamera;
     public TowerManager CurrentlySelectedTowerMenuItem;
     public GameObject Tower01Template;
@@ -53,6 +55,13 @@ public class UIManager : MonoBehaviour
     void Start()
     {
         CurrentUIManager = this;
+
+        // connect our UI parts to the game object variable changes
+        CurrentGameManager.OnCurrentMoneyChange += CurrentMoneyHandler;
+    }
+    private void CurrentMoneyHandler(int val)
+    {
+        RefreshMoneyLabel(val);
     }
 
     // Update is called once per frame

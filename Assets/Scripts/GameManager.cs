@@ -33,8 +33,19 @@ public class GameManager : MonoBehaviour
     public int CurrentMoney
     { 
         get { return _CurrentMoney; }
-        set { _CurrentMoney = value; UIManager.CurrentUIManager.RefreshMoneyLabel(_CurrentMoney); }
+        set 
+        {
+            _CurrentMoney = value;
+            // option 1: push to UI
+            //UIManager.CurrentUIManager.RefreshMoneyLabel(_CurrentMoney);
+
+            // option 2: create an event for any listeners
+            if (OnCurrentMoneyChange != null)
+                OnCurrentMoneyChange(_CurrentMoney);
+        }
     }
+    public delegate void OnCurrentMoneyChangeDelegate(int newVal);
+    public event OnCurrentMoneyChangeDelegate OnCurrentMoneyChange;
 
     public EnemyObject EnemyTemplate;
     private Color enemyTemplateForThisWave;
