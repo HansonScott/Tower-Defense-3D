@@ -214,7 +214,8 @@ public class UIManager : MonoBehaviour
             // color tower valid colors
             for (int i = 0; i < mats.Length; i++)
             {
-                if(mats[i].name != "CanonInterior")
+                if(mats[i].name != "CanonInterior" &&
+                    mats[i].name != "SelectionPlane")
                 {
                     mats[i].material.color = ValidTowerMaterial.color;
                 }
@@ -225,7 +226,8 @@ public class UIManager : MonoBehaviour
             // color tower invalid colors
             for (int i = 0; i < mats.Length; i++)
             {
-                if (mats[i].name != "CanonInterior")
+                if (mats[i].name != "CanonInterior" &&
+                    mats[i].name != "SelectionPlane")
                 {
                     mats[i].material.color = InvalidTowerMaterial.color;
                 }
@@ -242,6 +244,7 @@ public class UIManager : MonoBehaviour
         {
             // if we hit our own canon, skip it.
             if (rHit.transform.gameObject.name.StartsWith("Sphere")) { return; }
+            else if (rHit.transform.gameObject.name.StartsWith("Selection")) { return; }
 
             Transform t = rHit.transform;
             //print(t.gameObject.name + "'s top: " + (t.localScale.y + t.position.y));
