@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -87,7 +86,15 @@ public class EnemyObject : MonoBehaviour
         get { return _CurrentlySelected; }
         set 
         {
-            this.transform.Find("SelectionPlane").gameObject.SetActive(value);
+            try
+            {
+                this.transform.Find("SelectionPlane").gameObject.SetActive(value);
+                this.transform.Find("RangePlane").gameObject.SetActive(value);
+            }
+            catch (System.Exception e)
+            {
+                // do we wan tto do anything here? the object is gone, no need to follow up?
+            }
         }
     }
 

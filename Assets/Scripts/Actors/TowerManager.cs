@@ -118,6 +118,7 @@ public class TowerManager : MonoBehaviour
         set
         {
             this.transform.Find("SelectionPlane").gameObject.SetActive(value);
+            this.transform.Find("RangePlane").gameObject.SetActive(value);
         }
     }
 

@@ -118,6 +118,7 @@ public class UIManager : MonoBehaviour
 
             // turn the tower on
             CurrentlySelectedTowerMenuItem.CurrentState = TowerState.Seeking;
+            CurrentlySelectedTowerMenuItem.CurrentlySelected = false;
 
             // and turn on the collider, now that it's in the environment
             CurrentlySelectedTowerMenuItem.transform.GetComponentInChildren<BoxCollider>().enabled = true;
