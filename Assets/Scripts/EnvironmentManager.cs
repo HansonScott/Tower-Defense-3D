@@ -99,21 +99,10 @@ public class EnvironmentManager : MonoBehaviour
         return true;
     }
 
-    internal bool PlaceNewTower(TowerManager tower)
+    internal void AddTower(TowerManager t)
     {
-        // create a new permanent tower at this tower's location
-        GameObject newTower = GameObject.Instantiate(tower.gameObject);
-
-        // and turn the tower on
-        newTower.GetComponent<TowerManager>().CurrentState = TowerState.Seeking;
-
         // and add to our list
-        Towers.Add(newTower.GetComponent<TowerManager>());
-
-        // if there's any reason it didnt' work, let the caller know
-
-        // otherwise, it worked
-        return true;
+        Towers.Add(t);
     }
 
     internal EnemyObject PlaceNewEnemy(EnemyObject enemyTemplate)
@@ -144,9 +133,9 @@ public class EnvironmentManager : MonoBehaviour
     {
         for(int i = L.Count - 1; i > -1 ; i--)
         {
-            if(Enemies[i] == null) 
+            if(L[i] == null) 
             { 
-                Enemies.RemoveAt(i); 
+                L.RemoveAt(i); 
             }
         }
     }

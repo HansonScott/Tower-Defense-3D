@@ -29,8 +29,7 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 5677692228685537327}
+  m_Children: []
   m_Father: {fileID: 6866649888745768965}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -102,7 +101,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &5677692228685537327
 Transform:
   m_ObjectHideFlags: 0
@@ -110,13 +109,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3509089389937068407}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.05, z: 0}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0.050000012, z: 0}
   m_LocalScale: {x: 0.2, y: 1, z: 0.2}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 8847762823022019796}
-  m_RootOrder: 0
+  m_Father: {fileID: 6866649888745768965}
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &3785736326806013430
 MeshFilter:
@@ -359,6 +358,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6866649888745768965}
   - component: {fileID: 6467999631922546739}
+  - component: {fileID: 5581965268061400059}
   m_Layer: 0
   m_Name: Tower01
   m_TagString: Untagged
@@ -380,6 +380,7 @@ Transform:
   m_Children:
   - {fileID: 8847762823022019796}
   - {fileID: 2183711850747816325}
+  - {fileID: 5677692228685537327}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -407,3 +408,16 @@ MonoBehaviour:
   TurnSpeed: 100
   AttackEffects: []
   BulletTemplate: {fileID: 2067812004674293279, guid: d8ffa097fd3303d448abbeac529a8bf8, type: 3}
+--- !u!65 &5581965268061400059
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8246274975653233750}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 0
+  serializedVersion: 2
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}

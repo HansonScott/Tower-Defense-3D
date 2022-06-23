@@ -135,7 +135,7 @@ public class TowerManager : MonoBehaviour
     {
         // dont' do anything yet...
         if(this.CurrentState == TowerState.Placing) { return; }
-        if (GameManager.CurrentGame.CurrentState == GameState.WaveFailed) { return; } // dont' do anything at this time
+        if (GameManager.CurrentGame.CurrentState == GameState.WaveFailed) { return; } // don't do anything at this time
 
         // find next target
         List<EnemyObject> targets = FindAllEnemiesWithinRange();

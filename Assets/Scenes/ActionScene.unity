@@ -869,7 +869,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   CurrentUIState: 0
   MainCamera: {fileID: 1539836728}
-  CurrentlySelectedTowerTemplate: {fileID: 0}
+  CurrentlySelectedTowerMenuItem: {fileID: 0}
   Tower01Template: {fileID: 8246274975653233750, guid: 99f2befcb3ea9e64688e5b0f20004c75, type: 3}
   BulletTemplate: {fileID: 2067812004674293279, guid: d8ffa097fd3303d448abbeac529a8bf8, type: 3}
   ValidTowerMaterial: {fileID: 2100000, guid: 4c43e0ac46ac1e342976c5fd559b381c, type: 2}
@@ -2473,7 +2473,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 874421074}
         m_TargetAssemblyTypeName: UIManager, Assembly-CSharp
-        m_MethodName: TowerClicked
+        m_MethodName: TowerMenuItemClicked
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
