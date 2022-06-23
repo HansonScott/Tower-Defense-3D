@@ -128,7 +128,21 @@ public class EnvironmentManager : MonoBehaviour
     }
     internal EnemyObject[] GetAllEnemies()
     {
+        // when people care, then we can clean up the list
+        RemoveNullsFromList();
+
         return Enemies.ToArray();
+    }
+
+    private void RemoveNullsFromList()
+    {
+        for(int i = Enemies.Count - 1; i > -1 ; i--)
+        {
+            if(Enemies[i] == null) 
+            { 
+                Enemies.RemoveAt(i); 
+            }
+        }
     }
 
     // Update is called once per frame

@@ -2119,11 +2119,12 @@ MonoBehaviour:
   StartingMoney: 200
   EnemyTemplate: {fileID: 2786285845032917463, guid: 35c7efa66eecb0141998f0955ff6900c, type: 3}
   TimeSinceNewWave: 0
-  WaveDelay: 500
+  WaveDelay: 5
   TimeSinceLastSpawn: 0
-  SpawnDelay: 10
-  EnemyCountInWave: 10
-  CurrentWave: 1
+  SpawnDelay: 1
+  EnemyCountInWave: 2
+  CurrentWave: 0
+  MaxWavesForThisSession: 3
 --- !u!1 &1843672303
 GameObject:
   m_ObjectHideFlags: 0

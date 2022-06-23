@@ -9,6 +9,8 @@ public enum GameState
     WaveActive,
     WavePause,
     WaveFailed,
+    WaveComplete,
+    WaveWin,
     SessionEnd,
 }
 
@@ -45,7 +47,8 @@ public class GameManager : MonoBehaviour
     public int EnemyCountInWave = 10;
     private int RemainingEnemies = 10;
 
-    public int CurrentWave = 1;
+    public int CurrentWave = 0;
+    public int MaxWavesForThisSession = 20;
 
     // Start is called before the first frame update
     void Start()
@@ -53,6 +56,7 @@ public class GameManager : MonoBehaviour
         CurrentGame = this;
     }
 
+    #region Update and Primary State Handling
     // Update is called once per frame(?)
     void Update()
     {
@@ -75,6 +79,12 @@ public class GameManager : MonoBehaviour
             case GameState.WavePause:
                 HandleWavePause();
                 break;
+            case GameState.WaveComplete:
+                HandleWaveComplete();
+                break;
+            case GameState.WaveWin:
+                HandleWaveWin();
+                break;
             case GameState.WaveFailed:
                 HandleWaveFailed();
                 break;
@@ -89,6 +99,8 @@ public class GameManager : MonoBehaviour
     {
         // wait until buttons are pressed to start the session, skip for now
         CurrentState = GameState.SessionStart;
+
+        // future: show menu
     }
 
     private void HandleSessionStart()
@@ -149,26 +161,51 @@ public class GameManager : MonoBehaviour
         // check for all enemies spawned, then pause wave
         if(RemainingEnemies == 0)
         {
-            CurrentState = GameState.WaveStart;
-            TimeSinceNewWave = 0;
-
             // add more money for each wave cleared
             CurrentMoney += CurrentWave * 25;
 
-            //UIManager.CurrentUIManager.btnWave.enabled = true;
+            if (CurrentWave < MaxWavesForThisSession)
+            {
+                CurrentState = GameState.WaveStart;
+                TimeSinceNewWave = 0;
+            }
+            else
+            {
+                CurrentState = GameState.WaveComplete;
+            }
+
         }
     }
 
     private void HandleWavePause()
     {
         // check wave complete, or set a timer before next wave
+
     }
 
+    private void HandleWaveWin()
+    {
+        // if so, then we win!
+        print("All Enemies defated, you win!");
+    }
+
+    private void HandleWaveComplete()
+    {
+        // Since there's no more waves, keep checking for enemies all done,
+        if (EnvironmentManager.CurrentEnvironment.GetAllEnemies().Length == 0)
+        {
+            // if so, then we win!
+            print("All Enemies defated, you win!");
+
+            CurrentState = GameState.SessionEnd;
+        }
+    }
     private void HandleSessionEnd()
     {
-        // set final score, return to menu
+        // show final score, return to menu
         CurrentState = GameState.SessionMenu;
     }
+    #endregion
 
     public void EnemyHitHome(float dmg, Vector3 homePosition)
     {
@@ -201,12 +238,6 @@ public class GameManager : MonoBehaviour
         {
             CurrentState = GameState.WaveStart;
             TimeSinceNewWave = WaveDelay; // start first wave immeditely
-        }
-
-        // restart the next wave if we're active...(?)
-        if(CurrentState == GameState.WaveActive)
-        {
-            CurrentState = GameState.WaveStart;
         }
     }
     private void HandleWaveFailed()
