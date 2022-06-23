@@ -60,7 +60,7 @@
     <Compile Include="Assets\Scripts\EnvironmentManager.cs" />
     <Compile Include="Assets\Scripts\Actors\TravelingManager.cs" />
     <Compile Include="Assets\Scripts\UIManager.cs" />
-    <Compile Include="Assets\Scripts\AttackEffect.cs" />
+    <Compile Include="Assets\Scripts\Actors\AttackEffect.cs" />
     <Compile Include="Assets\Scripts\Actors\TowerManager.cs" />
     <Compile Include="Assets\Scripts\CameraManager.cs" />
     <Compile Include="Assets\Scripts\Actors\HomeScript.cs" />
