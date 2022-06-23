@@ -192,7 +192,7 @@ public class GameManager : MonoBehaviour
     private void HandleWaveComplete()
     {
         // Since there's no more waves, keep checking for enemies all done,
-        if (EnvironmentManager.CurrentEnvironment.GetAllEnemies().Length == 0)
+        if (EnvironmentManager.CurrentEnvironment.GetAllEnemies().Count == 0)
         {
             // if so, then we win!
             print("All Enemies defated, you win!");

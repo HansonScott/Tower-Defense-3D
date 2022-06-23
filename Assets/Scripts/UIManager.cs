@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -17,7 +18,7 @@ public class UIManager : MonoBehaviour
     public UIState CurrentUIState = UIState.Normal;
 
     public Camera MainCamera;
-    public GameObject CurrentlySelectedTower;
+    public TowerManager CurrentlySelectedTowerTemplate;
     public GameObject Tower01Template;
     public GameObject BulletTemplate;
 
@@ -27,19 +28,24 @@ public class UIManager : MonoBehaviour
 
     Vector3 latestObjectLocationInWorld = new Vector3();
 
-    public EnemyObject EnemySourceForInfoBox;
-    public GameObject EnemyInfoBox;
-    public TMP_Text txtHP;
-    public TMP_Text txtSpeed;
-    public TMP_Text txtArmor;
-
     public TMP_Text txtHomeHP;
     public TMP_Text txtWave;
     public TMP_Text txtScore;
     public TMP_Text txtMoney;
-
     public Button btnWave;
     public Button btnCanon;
+
+    public EnemyObject SourceForEnemyInfoBox;
+    public GameObject EnemyInfoBox;
+    public TMP_Text txtEnemyInfoHP;
+    public TMP_Text txtEnemyInfoSpeed;
+    public TMP_Text txtEnemyInfoArmor;
+
+    public TowerManager SourceForTowerInfoBox;
+    public GameObject TowerInfoBox;
+    public TMP_Text txtTowerInfoDmg;
+    public TMP_Text txtTowerInfoRange;
+    public TMP_Text txtTowerInfoFireRate;
 
     // Start is called before the first frame update
     void Start()
@@ -56,7 +62,7 @@ public class UIManager : MonoBehaviour
                 if (Input.GetMouseButtonUp(0)) // if finishing left mouse click
                 {
                     //print("mouse click captured");
-                    HandleInfoClick();
+                    HandleMouseClickNonPlacing();
                 }
                 break;
             case UIState.StartedPlacingTower:
@@ -100,18 +106,18 @@ public class UIManager : MonoBehaviour
             return;
         }
 
-        if(EnvironmentManager.IsValidTowerPlacement(CurrentlySelectedTower))
+        if(EnvironmentManager.IsValidTowerPlacement(CurrentlySelectedTowerTemplate))
         {
             // NOTE: need to move this to a library or reference or factory, etc.
             AttackEffect ae = Instantiate<AttackEffect>(BulletTemplate.GetComponent<AttackEffect>());
-            CurrentlySelectedTower.GetComponent<TowerManager>().AttackEffects.Add(ae);
+            CurrentlySelectedTowerTemplate.GetComponent<TowerManager>().AttackEffects.Add(ae);
 
-            bool worked = EnvironmentManager.CurrentEnvironment.PlaceNewTower(CurrentlySelectedTower);
+            bool worked = EnvironmentManager.CurrentEnvironment.PlaceNewTower(CurrentlySelectedTowerTemplate);
 
             if(worked)
             {
                 // remove the template
-                Destroy(CurrentlySelectedTower);
+                Destroy(CurrentlySelectedTowerTemplate);
 
                 // and set our UI back to normal
                 CurrentUIState = UIState.Normal;
@@ -123,24 +129,23 @@ public class UIManager : MonoBehaviour
         }
     }
 
-    private void HandleInfoClick()
+    private void HandleMouseClickNonPlacing()
     {
-        // user clicked the mouse, but is not placing a tower
-
         // see if they clicked on an object, if so, show that object's details.
         Vector3 mousePosition = Input.mousePosition;
         RaycastHit rHit;
 
+        // unselect all towers and enemies, regardless of what we clicked
+        SetSelectionForAllEnemies(false);
+        SetSelectionForAllTowers(false);
+
         // only do this work if user clicked an object
         if (Physics.Raycast(MainCamera.ScreenPointToRay(mousePosition), out rHit))
         {
-            // if we hit our own canon, skip it.
-            //print("Mouse clicked on " + rHit.transform.gameObject.name);
-
             if (rHit.transform.gameObject.name.StartsWith("Enemy01"))
             {
                 HandleEnemyInfoClick(rHit.transform.gameObject);
-                EnemyInfoBox.SetActive(true);
+                TowerInfoBox.SetActive(false);
             }
             else if (rHit.transform.gameObject.name.StartsWith("Tower01"))
             {
@@ -153,18 +158,42 @@ public class UIManager : MonoBehaviour
         }
         else
         {
+            TowerInfoBox.SetActive(false);
             EnemyInfoBox.SetActive(false);
         }
 
     }
 
+    private void SetSelectionForAllEnemies(bool selected)
+    {
+        List<EnemyObject> es = EnvironmentManager.CurrentEnvironment.GetAllEnemies();
+        for(int i = 0; i < es.Count; i++)
+        {
+            es[i].CurrentlySelected = selected;
+        }
+    }
+
+    private void SetSelectionForAllTowers(bool selected)
+    {
+        List<TowerManager> tms = EnvironmentManager.CurrentEnvironment.GetAllTowers();
+        for (int i = 0; i < tms.Count; i++)
+        {
+            tms[i].gameObject.SetActive(selected);
+        }
+    }
+
     private void HandleEnemyInfoClick(GameObject o)
     {
+        // select this enemy
+        o.GetComponent<EnemyObject>().CurrentlySelected = true;
+        EnemyInfoBox.SetActive(true);
+
         if (o != null &&
             o.GetComponent<EnemyObject>() != null)
         {
-            EnemySourceForInfoBox = o.GetComponent<EnemyObject>();
+            SourceForEnemyInfoBox = o.GetComponent<EnemyObject>();
             RefreshEnemyInfoBox();
+            EnemyInfoBox.SetActive(true);
         }
 
         // enable the enemy info box
@@ -173,41 +202,42 @@ public class UIManager : MonoBehaviour
 
     public void RefreshEnemyInfoBox()
     {
-        if(EnemySourceForInfoBox != null)
+        if(SourceForEnemyInfoBox != null)
         {
             string DesiredFormat = "N1";
-            txtHP.text = "HP: " + EnemySourceForInfoBox.HPCurrent.ToString(DesiredFormat) + " / " + EnemySourceForInfoBox.HPMax.ToString(DesiredFormat);
-            txtSpeed.text = "Speed: " + (EnemySourceForInfoBox.SpeedCurrent * 100).ToString(DesiredFormat); // instead of a decimal...
-            txtArmor.text = "Armor: " + EnemySourceForInfoBox.ArmorCurrent.ToString(DesiredFormat);
+            txtEnemyInfoHP.text = "HP: " + SourceForEnemyInfoBox.HPCurrent.ToString(DesiredFormat) + " / " + SourceForEnemyInfoBox.HPMax.ToString(DesiredFormat);
+            txtEnemyInfoSpeed.text = "Speed: " + (SourceForEnemyInfoBox.SpeedCurrent * 100).ToString(DesiredFormat); // instead of a decimal...
+            txtEnemyInfoArmor.text = "Armor: " + SourceForEnemyInfoBox.ArmorCurrent.ToString(DesiredFormat);
 
             // list immunities / specials
-
-            // color labels if status effects active, etc.
-
         }
         else
         {
             EnemyInfoBox.SetActive(false);
-            //txtHP.text = "HP: X / Y";
-            //txtSpeed.text = "Speed: S";
-            //txtArmor.text = "Armor: A";
-
-            // list immunities / specials
-
-            // color labels if status effects active, etc.
-
         }
     }
 
     private void HandleTowerInfoClick(GameObject gameObject)
     {
-        throw new NotImplementedException();
+        if (SourceForEnemyInfoBox != null)
+        {
+            string DesiredFormat = "N1";
+            txtEnemyInfoHP.text = "HP: " + SourceForEnemyInfoBox.HPCurrent.ToString(DesiredFormat) + " / " + SourceForEnemyInfoBox.HPMax.ToString(DesiredFormat);
+            txtEnemyInfoSpeed.text = "Speed: " + (SourceForEnemyInfoBox.SpeedCurrent * 100).ToString(DesiredFormat); // instead of a decimal...
+            txtEnemyInfoArmor.text = "Armor: " + SourceForEnemyInfoBox.ArmorCurrent.ToString(DesiredFormat);
+
+            // list immunities / specials
+        }
+        else
+        {
+            EnemyInfoBox.SetActive(false);
+        }
     }
 
     private void ColorSelectedTowerBasedOnValidity()
     {
-        bool isValid = EnvironmentManager.IsValidTowerPlacement(CurrentlySelectedTower);
-        MeshRenderer[] mats = CurrentlySelectedTower.GetComponentsInChildren<MeshRenderer>();
+        bool isValid = EnvironmentManager.IsValidTowerPlacement(CurrentlySelectedTowerTemplate);
+        MeshRenderer[] mats = CurrentlySelectedTowerTemplate.GetComponentsInChildren<MeshRenderer>();
 
         if (isValid)
         {
@@ -260,7 +290,7 @@ public class UIManager : MonoBehaviour
             }
         }
 
-        CurrentlySelectedTower.transform.position = latestObjectLocationInWorld;
+        CurrentlySelectedTowerTemplate.transform.position = latestObjectLocationInWorld;
     }
 
     // tower menu item clicked
@@ -269,18 +299,18 @@ public class UIManager : MonoBehaviour
         if (CurrentUIState == UIState.Normal)
         {
             CurrentUIState = UIState.StartedPlacingTower;
-            CurrentlySelectedTower = GetSelectedTower();
+            CurrentlySelectedTowerTemplate = CreateSelectedTower();
         }
         else
         {
             // we were already placing a tower, what should we do?  Change towers?
-            CurrentlySelectedTower = GetSelectedTower();
+            CurrentlySelectedTowerTemplate = CreateSelectedTower();
         }
     }
-    private GameObject GetSelectedTower()
+    private TowerManager CreateSelectedTower()
     {
         // instantiate the right tower based on what button was pressed
-        return Instantiate(Tower01Template);
+        return Instantiate(Tower01Template.gameObject).GetComponent<TowerManager>();
     }
 
 }

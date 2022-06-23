@@ -14,7 +14,7 @@ public class TravelingManager : MonoBehaviour
     void Start()
     {
         // establish first target
-        NextTarget = EnvironmentManager.GetNextTarget(TargetNode++);
+        NextTarget = EnvironmentManager.GetNextTargetOnPath(TargetNode++);
     }
 
     // Update is called once per frame
@@ -30,7 +30,7 @@ public class TravelingManager : MonoBehaviour
             OnTargetNode())
         {
             // progress to next node
-            NextTarget = EnvironmentManager.GetNextTarget(TargetNode++);
+            NextTarget = EnvironmentManager.GetNextTargetOnPath(TargetNode++);
 
             // if on home node, then damage and end
             if (NextTarget == new Vector3())

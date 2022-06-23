@@ -15,7 +15,6 @@ enum StatusEffect
 public class EnemyObject : MonoBehaviour
 {
     public bool IsAlive = true;
-
     public float NearbyDistance = 1.0f;
 
     #region Properties
@@ -81,6 +80,17 @@ public class EnemyObject : MonoBehaviour
     }
 
     public List<AttackEffect> CurrentAttackEffects;
+    
+    private bool _CurrentlySelected;
+    public bool CurrentlySelected
+    {
+        get { return _CurrentlySelected; }
+        set 
+        {
+            this.transform.Find("SelectionPlane").gameObject.SetActive(value);
+        }
+    }
+
     #endregion
 
     // Start is called before the first frame update
@@ -303,7 +313,7 @@ public class EnemyObject : MonoBehaviour
         }
 
         // now, apply specials, regardless of above
-        EnemyObject[] allEnemies = EnvironmentManager.CurrentEnvironment.GetAllEnemies();
+        List<EnemyObject> allEnemies = EnvironmentManager.CurrentEnvironment.GetAllEnemies();
         List<EnemyObject> nearbyEnemies = GetNearbyEnemies(allEnemies, a.SplashRange);
 
         if (a.ChainCountRemaining > 0)
@@ -330,14 +340,14 @@ public class EnemyObject : MonoBehaviour
 
         if (a.Duration > 0) { this.CurrentAttackEffects.Add(a); }
 
-        if(UIManager.CurrentUIManager.EnemySourceForInfoBox == this)
+        if(UIManager.CurrentUIManager.SourceForEnemyInfoBox == this)
         {
             UIManager.CurrentUIManager.RefreshEnemyInfoBox();
         }
     }
 
-    private List<EnemyObject> GetNearbyEnemies(EnemyObject[] allEnemies) { return GetNearbyEnemies(allEnemies, NearbyDistance); }
-    private List<EnemyObject> GetNearbyEnemies(EnemyObject[] allEnemies, float Range)
+    private List<EnemyObject> GetNearbyEnemies(List<EnemyObject> allEnemies) { return GetNearbyEnemies(allEnemies, NearbyDistance); }
+    private List<EnemyObject> GetNearbyEnemies(List<EnemyObject> allEnemies, float Range)
     {
         List<EnemyObject> result = new();
 

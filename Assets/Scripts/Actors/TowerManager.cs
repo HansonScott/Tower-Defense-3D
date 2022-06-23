@@ -111,6 +111,16 @@ public class TowerManager : MonoBehaviour
 
     public GameObject BulletTemplate;
 
+    private bool _CurrentlySelected;
+    public bool CurrentlySelected
+    {
+        get { return _CurrentlySelected; }
+        set
+        {
+            this.transform.Find("SelectionPlane").gameObject.SetActive(value);
+        }
+    }
+
     #endregion
 
     // Start is called before the first frame update
@@ -168,10 +178,10 @@ public class TowerManager : MonoBehaviour
 
     private List<EnemyObject> FindAllEnemiesWithinRange()
     {
-        EnemyObject[] enemies = EnvironmentManager.CurrentEnvironment.GetAllEnemies();
+        List<EnemyObject> enemies = EnvironmentManager.CurrentEnvironment.GetAllEnemies();
         List<EnemyObject> enemiesWithinRange = new();
 
-        if(enemies.Length > 0)
+        if(enemies.Count > 0)
         {
             foreach(EnemyObject e in enemies)
             {

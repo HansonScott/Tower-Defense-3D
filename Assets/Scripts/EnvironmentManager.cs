@@ -35,12 +35,12 @@ public class EnvironmentManager : MonoBehaviour
     internal static readonly int HomeNode = gridSize - 1; // -1 for the 0-based array
 
     static Vector3[] CurrentPath = new Vector3[gridSize];
-    static List<GameObject> Towers = new();
+    static List<TowerManager> Towers = new();
     static List<EnemyObject> Enemies = new();
 
     public static EnvironmentManager CurrentEnvironment;
 
-    internal static Vector3 GetNextTarget(int NodeIndex)
+    internal static Vector3 GetNextTargetOnPath(int NodeIndex)
     {
         if(NodeIndex >= CurrentPath.Length) { return new Vector3(); }
 
@@ -54,11 +54,11 @@ public class EnvironmentManager : MonoBehaviour
         CreateEnvironment();
     }
 
-    internal static bool IsValidTowerPlacement(GameObject tower)
+    internal static bool IsValidTowerPlacement(TowerManager towerTemplate)
     {
         // see if the x & z coordinates are on the path or not
-        float x = tower.transform.position.x;
-        float z = tower.transform.position.z;
+        float x = towerTemplate.transform.position.x;
+        float z = towerTemplate.transform.position.z;
 
         bool onX = false;
         bool onZ = false;
@@ -83,7 +83,7 @@ public class EnvironmentManager : MonoBehaviour
         #endregion
 
         #region Check Existing Towers
-        foreach(GameObject t in Towers)
+        foreach(TowerManager t in Towers)
         {
             // if this tower is on the same location as an existing tower
             if(t.transform.position.x == x &&
@@ -99,16 +99,16 @@ public class EnvironmentManager : MonoBehaviour
         return true;
     }
 
-    internal bool PlaceNewTower(GameObject tower)
+    internal bool PlaceNewTower(TowerManager tower)
     {
         // create a new permanent tower at this tower's location
-        GameObject newTower = GameObject.Instantiate(tower);
+        GameObject newTower = GameObject.Instantiate(tower.gameObject);
 
         // and turn the tower on
         newTower.GetComponent<TowerManager>().CurrentState = TowerState.Seeking;
 
         // and add to our list
-        Towers.Add(newTower);
+        Towers.Add(newTower.GetComponent<TowerManager>());
 
         // if there's any reason it didnt' work, let the caller know
 
@@ -126,17 +126,23 @@ public class EnvironmentManager : MonoBehaviour
         // otherwise, it worked
         return e;
     }
-    internal EnemyObject[] GetAllEnemies()
+    internal List<TowerManager> GetAllTowers()
+    {
+        RemoveNullsFromList(Towers);
+
+        return Towers;
+    }
+    internal List<EnemyObject> GetAllEnemies()
     {
         // when people care, then we can clean up the list
-        RemoveNullsFromList();
+        RemoveNullsFromList(Enemies);
 
-        return Enemies.ToArray();
+        return Enemies;
     }
 
-    private void RemoveNullsFromList()
+    private void RemoveNullsFromList(IList L)
     {
-        for(int i = Enemies.Count - 1; i > -1 ; i--)
+        for(int i = L.Count - 1; i > -1 ; i--)
         {
             if(Enemies[i] == null) 
             { 
