@@ -13,7 +13,23 @@ enum StatusEffect
 
 public class EnemyObject : MonoBehaviour
 {
-    public bool IsAlive = true;
+    private bool _IsAlive = true;
+    public bool IsAlive
+    {
+        get
+        {
+            return _IsAlive;
+        }
+        set 
+        {
+            _IsAlive = value;
+            if (onIsAliveChange != null)
+                onIsAliveChange(this, _IsAlive);
+        }
+    }
+    public delegate void OnIsAliveChangeDelegate(EnemyObject e, bool alive);
+    public event OnIsAliveChangeDelegate onIsAliveChange;
+
     public float NearbyDistance = 1.0f;
 
     #region Properties
@@ -33,11 +49,9 @@ public class EnemyObject : MonoBehaviour
             if(_HPCurrent <= 0)
             {
                 // then we've died.
-                this.IsAlive = false;
+                this.IsAlive = false; // this triggers all the game manager event stuff.
 
-                // and report this out to the game
-                GameManager.CurrentGame.CurrentScore += GameManager.CurrentGame.CurrentWave; // adds 1 point per enemy per wave (ex: wave 20 = each enemy is worth 20)
-                GameManager.CurrentGame.CurrentMoney += GameManager.CurrentGame.CurrentWave * 5; // adds $5 per enemy per wave (ex: wave 20 = each enemy is worth $100)
+                // this may update the enemy info box (move to event?)
                 UIManager.CurrentUIManager.RefreshEnemyInfoBox();
             }
             else

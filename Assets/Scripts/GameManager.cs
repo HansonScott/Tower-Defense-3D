@@ -31,9 +31,9 @@ public class GameManager : MonoBehaviour
 
     private int _CurrentMoney = 0;
     public int CurrentMoney
-    { 
+    {
         get { return _CurrentMoney; }
-        set 
+        set
         {
             _CurrentMoney = value;
             // option 1: push to UI
@@ -50,21 +50,129 @@ public class GameManager : MonoBehaviour
     public EnemyObject EnemyTemplate;
     private Color enemyTemplateForThisWave;
 
-    public float TimeSinceNewWave = 0;
-    public float WaveDelay = 10;
+    private WaveInfo _CurrentWaveInfo;
+    public WaveInfo CurrentWaveInfo
+    {
+        get
+        {
+            if(_CurrentWaveInfo == null)
+            {
+                _CurrentWaveInfo = new WaveInfo();
+            }
 
-    public float TimeSinceLastSpawn = 0;
-    public float SpawnDelay = 1.5f;
-    public int EnemyCountInWave = 10;
-    private int RemainingEnemies = 10;
+            return _CurrentWaveInfo;
+        }
+        private set { }
+    }
+    public class WaveInfo
+    {
+        private int _MaxWavesForThisSession = 20;
+        public int MaxWavesForThisSession
+        {
+            get { return _MaxWavesForThisSession; }
+            set 
+            { 
+                _MaxWavesForThisSession = value; 
+                if (onCurrentWaveInfoChange != null) 
+                { onCurrentWaveInfoChange(this); } 
+            }
+        }
 
-    public int CurrentWave = 0;
-    public int MaxWavesForThisSession = 20;
+        private int _CurrentWave = 0;
+        public int CurrentWave
+        {
+            get { return _CurrentWave; }
+            set
+            {
+                _CurrentWave = value;
+                if (onCurrentWaveInfoChange != null)
+                { onCurrentWaveInfoChange(this); }
+            }
+        }
+
+        private float _TimeSinceNewWave = 0;
+        public float TimeSinceNewWave
+        {
+            get { return _TimeSinceNewWave; }
+            set
+            {
+                _TimeSinceNewWave = value;
+                if (onCurrentWaveInfoChange != null)
+                { onCurrentWaveInfoChange(this); }
+            }
+        }
+
+        private float _WaveDelay = 10;
+        public float WaveDelay
+        {
+            get { return _WaveDelay; }
+            set
+            {
+                _WaveDelay = value;
+                if (onCurrentWaveInfoChange != null)
+                { onCurrentWaveInfoChange(this); }
+            }
+        }
+
+        private float _TimeSinceLastSpawn = 0;
+        public float TimeSinceLastSpawn
+        {
+            get { return _TimeSinceLastSpawn; }
+            set
+            {
+                _TimeSinceLastSpawn = value;
+                if (onCurrentWaveInfoChange != null)
+                { onCurrentWaveInfoChange(this); }
+            }
+        }
+
+        private float _SpawnDelay = 1.5f;
+        public float SpawnDelay
+        {
+            get { return _SpawnDelay; }
+            set
+            {
+                _SpawnDelay = value;
+                if (onCurrentWaveInfoChange != null)
+                { onCurrentWaveInfoChange(this); }
+            }
+        }
+
+        private int _EnemyCountInWave = 10;
+        public int EnemyCountInWave
+        {
+            get { return _EnemyCountInWave; }
+            set
+            {
+                _EnemyCountInWave = value;
+                if (onCurrentWaveInfoChange != null)
+                { onCurrentWaveInfoChange(this); }
+            }
+        }
+
+        private int _RemainingEnemies = 10;
+        public int RemainingEnemies
+        {
+            get { return _RemainingEnemies; }
+            set
+            {
+                _RemainingEnemies = value;
+                if (onCurrentWaveInfoChange != null)
+                { onCurrentWaveInfoChange(this); }
+            }
+        }
+
+
+        public delegate void OnWaveInfoChangeDelegate(WaveInfo info);
+        public event OnWaveInfoChangeDelegate onCurrentWaveInfoChange;
+    }
+
 
     // Start is called before the first frame update
     void Start()
     {
         CurrentGame = this;
+        CurrentWaveInfo = new WaveInfo();
     }
 
     #region Update and Primary State Handling
@@ -81,7 +189,6 @@ public class GameManager : MonoBehaviour
                 break;
             case GameState.WaveStart:
                 HandleWaveStart();
-                UIManager.CurrentUIManager.RefreshWaveLabel(CurrentWave);
                 UIManager.CurrentUIManager.btnWave.enabled = false;
                 break;
             case GameState.WaveActive:
@@ -126,22 +233,22 @@ public class GameManager : MonoBehaviour
 
     private void HandleWaveStart()
     {
-        if(TimeSinceNewWave > WaveDelay)
+        if(CurrentWaveInfo.TimeSinceNewWave > CurrentWaveInfo.WaveDelay)
         {
-            int powerLevel = ++CurrentWave * 100;
+            int powerLevel = ++CurrentWaveInfo.CurrentWave * 100;
 
             // start the wave variables
             enemyTemplateForThisWave = EnemyObject.GetRandomEnemyProperties(powerLevel);
 
-            RemainingEnemies = EnemyCountInWave;
+            CurrentWaveInfo.RemainingEnemies = CurrentWaveInfo.EnemyCountInWave;
 
             // then set the wave to active
             CurrentState = GameState.WaveActive;
-            TimeSinceLastSpawn = SpawnDelay; // set initial enemy to spawn immediately
+            CurrentWaveInfo.TimeSinceLastSpawn = CurrentWaveInfo.SpawnDelay; // set initial enemy to spawn immediately
         }
         else
         {
-            TimeSinceNewWave += Time.deltaTime;
+            CurrentWaveInfo.TimeSinceNewWave += Time.deltaTime;
         }
     }
 
@@ -150,9 +257,11 @@ public class GameManager : MonoBehaviour
         // check for enemy spawn count, etc.
 
         // check for spawn delay
-        if (TimeSinceLastSpawn >= SpawnDelay && RemainingEnemies > 0)
+        if (CurrentWaveInfo.TimeSinceLastSpawn >= CurrentWaveInfo.SpawnDelay && CurrentWaveInfo.RemainingEnemies > 0)
         {
             EnemyObject e = EnvironmentManager.CurrentEnvironment.PlaceNewEnemy(EnemyTemplate);
+
+            e.onIsAliveChange += E_onIsAliveChange;
 
             // do anything to this particular one?
             e.gameObject.GetComponent<MeshRenderer>().material.color = enemyTemplateForThisWave;
@@ -161,24 +270,24 @@ public class GameManager : MonoBehaviour
             e.transform.position = EnvironmentManager.CurrentSpawnPoint;
 
             // reset for next enemy
-            TimeSinceLastSpawn = 0;
-            RemainingEnemies--;
+            CurrentWaveInfo.TimeSinceLastSpawn = 0;
+            CurrentWaveInfo.RemainingEnemies--;
         }
         else
         {
-            TimeSinceLastSpawn += Time.deltaTime;
+            CurrentWaveInfo.TimeSinceLastSpawn += Time.deltaTime;
         }
 
         // check for all enemies spawned, then pause wave
-        if(RemainingEnemies == 0)
+        if(CurrentWaveInfo.RemainingEnemies == 0)
         {
             // add more money for each wave cleared
-            CurrentMoney += CurrentWave * 25;
+            CurrentMoney += CurrentWaveInfo.CurrentWave * 25;
 
-            if (CurrentWave < MaxWavesForThisSession)
+            if (CurrentWaveInfo.CurrentWave < CurrentWaveInfo.MaxWavesForThisSession)
             {
                 CurrentState = GameState.WaveStart;
-                TimeSinceNewWave = 0;
+                CurrentWaveInfo.TimeSinceNewWave = 0;
             }
             else
             {
@@ -186,6 +295,13 @@ public class GameManager : MonoBehaviour
             }
 
         }
+    }
+
+    // when an enemy dies
+    private void E_onIsAliveChange(EnemyObject e, bool alive)
+    {
+        CurrentScore += CurrentWaveInfo.CurrentWave; // adds 1 point per enemy per wave (ex: wave 20 = each enemy is worth 20)
+        CurrentMoney += CurrentWaveInfo.CurrentWave * 5; // adds $5 per enemy per wave (ex: wave 20 = each enemy is worth $100)
     }
 
     private void HandleWavePause()
@@ -248,7 +364,7 @@ public class GameManager : MonoBehaviour
         if(CurrentState == GameState.SessionStart)
         {
             CurrentState = GameState.WaveStart;
-            TimeSinceNewWave = WaveDelay; // start first wave immeditely
+            CurrentWaveInfo.TimeSinceNewWave = CurrentWaveInfo.WaveDelay; // start first wave immeditely
         }
     }
     private void HandleWaveFailed()

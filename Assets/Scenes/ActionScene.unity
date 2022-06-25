@@ -699,8 +699,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 71, y: -21}
-  m_SizeDelta: {x: 127.20001, y: 27.699997}
+  m_AnchoredPosition: {x: 101.3, y: -21}
+  m_SizeDelta: {x: 186.13, y: 27.699997}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &740762426
 MonoBehaviour:
@@ -868,6 +868,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   CurrentUIState: 0
+  CurrentGameManager: {fileID: 1734944921}
   MainCamera: {fileID: 1539836728}
   CurrentlySelectedTowerMenuItem: {fileID: 0}
   Tower01Template: {fileID: 8246274975653233750, guid: 99f2befcb3ea9e64688e5b0f20004c75, type: 3}
@@ -2568,13 +2569,6 @@ MonoBehaviour:
   CurrentState: 0
   StartingMoney: 200
   EnemyTemplate: {fileID: 2786285845032917463, guid: 35c7efa66eecb0141998f0955ff6900c, type: 3}
-  TimeSinceNewWave: 0
-  WaveDelay: 5
-  TimeSinceLastSpawn: 0
-  SpawnDelay: 1
-  EnemyCountInWave: 2
-  CurrentWave: 0
-  MaxWavesForThisSession: 3
 --- !u!1 &1843672303
 GameObject:
   m_ObjectHideFlags: 0

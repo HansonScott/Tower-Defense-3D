@@ -58,10 +58,7 @@ public class UIManager : MonoBehaviour
 
         // connect our UI parts to the game object variable changes
         CurrentGameManager.OnCurrentMoneyChange += CurrentMoneyHandler;
-    }
-    private void CurrentMoneyHandler(int val)
-    {
-        RefreshMoneyLabel(val);
+        CurrentGameManager.CurrentWaveInfo.onCurrentWaveInfoChange += WaveInfoChangeHandler;
     }
 
     // Update is called once per frame
@@ -94,13 +91,21 @@ public class UIManager : MonoBehaviour
         }
     }
 
-    internal void RefreshWaveLabel(int currentWave)
+    private void WaveInfoChangeHandler(GameManager.WaveInfo info)
     {
-        txtWave.text = "Wave: " + currentWave;
+        RefreshWaveLabel(info.CurrentWave, (info.EnemyCountInWave - info.RemainingEnemies), info.EnemyCountInWave);
+    }
+    internal void RefreshWaveLabel(int currentWave, int EnemyProgress, int EnemyTotal)
+    {
+        txtWave.text = "Wave: " + currentWave.ToString() + " (" + EnemyProgress.ToString() + " / " + EnemyTotal.ToString() + ")";
     }
     internal void RefreshScoreLabel(int currentScore)
     {
         txtScore.text = "Score: " + currentScore;
+    }
+    private void CurrentMoneyHandler(int val)
+    {
+        RefreshMoneyLabel(val);
     }
     internal void RefreshMoneyLabel(int currentMoney)
     {
