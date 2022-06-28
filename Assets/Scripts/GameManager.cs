@@ -179,7 +179,7 @@ public class GameManager : MonoBehaviour
     // Update is called once per frame(?)
     void Update()
     {
-        switch(CurrentState)
+        switch (CurrentState)
         {
             case GameState.SessionMenu:
                 HandleSessionMenu();
@@ -188,16 +188,28 @@ public class GameManager : MonoBehaviour
                 HandleSessionStart();
                 break;
             case GameState.WaveStart:
+
+                //if (PauseManager.CurrentGameSpeed == PauseManager.GameSpeed.Paused) { return; }
+
                 HandleWaveStart();
-                UIManager.CurrentUIManager.btnWave.enabled = false;
+                //UIManager.CurrentUIManager.btnWave.enabled = false;
                 break;
             case GameState.WaveActive:
+
+                if (PauseManager.CurrentGameSpeed == PauseManager.GameSpeed.Paused) { return; }
+
                 HandleWaveActive();
                 break;
             case GameState.WavePause:
+
+                if (PauseManager.CurrentGameSpeed == PauseManager.GameSpeed.Paused) { return; }
+
                 HandleWavePause();
                 break;
             case GameState.WaveComplete:
+
+                if (PauseManager.CurrentGameSpeed == PauseManager.GameSpeed.Paused) { return; }
+
                 HandleWaveComplete();
                 break;
             case GameState.WaveWin:
@@ -233,14 +245,39 @@ public class GameManager : MonoBehaviour
 
     private void HandleWaveStart()
     {
-        if(CurrentWaveInfo.TimeSinceNewWave > CurrentWaveInfo.WaveDelay)
+
+        if (CurrentWaveInfo.TimeSinceNewWave > CurrentWaveInfo.WaveDelay)
         {
             int powerLevel = ++CurrentWaveInfo.CurrentWave * 100;
 
-            // start the wave variables
-            enemyTemplateForThisWave = EnemyObject.GetRandomEnemyProperties(powerLevel);
+            if(CurrentWaveInfo.CurrentWave % 10 == 0)
+            {
+                // boss wave
+                powerLevel *= 10; // 10 times as strong
 
-            CurrentWaveInfo.RemainingEnemies = CurrentWaveInfo.EnemyCountInWave;
+                // start the wave variables
+                enemyTemplateForThisWave = EnemyObject.GetRandomEnemyProperties(powerLevel);
+
+                CurrentWaveInfo.RemainingEnemies = 1;
+            }
+            else if (CurrentWaveInfo.CurrentWave % 10 == 5)
+            {
+                // mini boss wave
+                powerLevel *= 5; // 10 times as strong
+
+                // start the wave variables
+                enemyTemplateForThisWave = EnemyObject.GetRandomEnemyProperties(powerLevel);
+
+                CurrentWaveInfo.RemainingEnemies = 3;
+            }
+            else
+            {
+                // start the wave variables
+                enemyTemplateForThisWave = EnemyObject.GetRandomEnemyProperties(powerLevel);
+
+                CurrentWaveInfo.RemainingEnemies = CurrentWaveInfo.EnemyCountInWave;
+
+            }
 
             // then set the wave to active
             CurrentState = GameState.WaveActive;
@@ -263,10 +300,50 @@ public class GameManager : MonoBehaviour
 
             e.onIsAliveChange += E_onIsAliveChange;
 
-            // do anything to this particular one?
             e.gameObject.GetComponent<MeshRenderer>().material.color = enemyTemplateForThisWave;
-
             e.ApplyPropertiesFromColor(enemyTemplateForThisWave);
+
+            // boss wave
+            if(CurrentWaveInfo.CurrentWave % 10 == 0)
+            {
+                // even with a higher power level, make sure the HP is way up.
+                e.HPMax *= 5;
+                e.HPCurrent = e.HPMax;
+
+                // and slower
+                e.SpeedMax *= 0.5f;
+                e.SpeedCurrent = e.SpeedMax;
+
+                // set the bigger size
+                Vector3 s = e.transform.localScale;
+                s.Set(1.1f, 1.2f, 1.1f);
+                e.transform.localScale = s;
+
+                // and damages home more
+                e.DmgMax *= 10;
+                e.DmgCurrent = e.DmgMax;
+            }
+            // mini boss wave
+            else if(CurrentWaveInfo.CurrentWave % 10 == 5)
+            {
+                // even with a higher power level, make sure the HP is way up.
+                e.HPMax *= 3;
+                e.HPCurrent = e.HPMax;
+
+                // and slower
+                e.SpeedMax *= 0.5f;
+                e.SpeedCurrent = e.SpeedMax;
+
+                // set the bigger size
+                Vector3 s = e.transform.localScale;
+                s.Set(1.05f, 1.0f, 1.05f);
+                e.transform.localScale = s;
+
+                // and damages home more
+                e.DmgMax *= 5;
+                e.DmgCurrent = e.DmgMax;
+            }
+
             e.transform.position = EnvironmentManager.CurrentSpawnPoint;
 
             // reset for next enemy
@@ -284,7 +361,7 @@ public class GameManager : MonoBehaviour
             // add more money for each wave cleared
             CurrentMoney += CurrentWaveInfo.CurrentWave * 25;
 
-            if (CurrentWaveInfo.CurrentWave < CurrentWaveInfo.MaxWavesForThisSession)
+            if (CurrentWaveInfo.CurrentWave <= CurrentWaveInfo.MaxWavesForThisSession)
             {
                 CurrentState = GameState.WaveStart;
                 CurrentWaveInfo.TimeSinceNewWave = 0;
@@ -357,15 +434,27 @@ public class GameManager : MonoBehaviour
         UIManager.CurrentUIManager.txtHomeHP.text = "HP: " + EnvironmentManager.CurrentEnvironment.CurrentHome.GetComponent<HomeScript>().HPCurrent;
     }
 
-    public void StartWaveClick()
+    public void BtnPauseClick()
     {
-        UIManager.CurrentUIManager.btnWave.gameObject.SetActive(false);
+        PauseManager.CurrentGameSpeed = PauseManager.GameSpeed.Paused;
+    }
+    public void btnPlayClick()
+    {
+        PauseManager.CurrentGameSpeed = PauseManager.GameSpeed.Play;
 
-        if(CurrentState == GameState.SessionStart)
+        if (CurrentState == GameState.SessionStart)
         {
             CurrentState = GameState.WaveStart;
             CurrentWaveInfo.TimeSinceNewWave = CurrentWaveInfo.WaveDelay; // start first wave immeditely
         }
+    }
+    public void BtnFF1Click()
+    {
+        PauseManager.CurrentGameSpeed = PauseManager.GameSpeed.FF1;
+    }
+    public void btnFF2Click()
+    {
+        PauseManager.CurrentGameSpeed = PauseManager.GameSpeed.FF2;
     }
     private void HandleWaveFailed()
     {

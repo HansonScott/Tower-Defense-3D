@@ -143,7 +143,8 @@ public class EnvironmentManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        // nothing is done in real time, so no need to check for game paused
+        //if (PauseManager.gameIsPaused) { return; }
     }
 
     void CreateEnvironment()

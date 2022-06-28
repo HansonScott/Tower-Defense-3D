@@ -22,6 +22,7 @@ public class TravelingManager : MonoBehaviour
     {
         if (GameManager.CurrentGame.CurrentState == GameState.WaveFailed) { return; } // dont' do anything at this time
 
+        if (PauseManager.CurrentGameSpeed == PauseManager.GameSpeed.Paused) { return; }
 
         // shouldn't need this if the entire game object is destoryed...
         //if (!this.gameObject.GetComponent<EnemyObject>().IsALive) { Destroy(this); return; }

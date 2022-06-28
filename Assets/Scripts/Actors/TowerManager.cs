@@ -139,6 +139,8 @@ public class TowerManager : MonoBehaviour
         if(this.CurrentState == TowerState.Placing) { return; }
         if (GameManager.CurrentGame.CurrentState == GameState.WaveFailed) { return; } // don't do anything at this time
 
+        if (PauseManager.CurrentGameSpeed == PauseManager.GameSpeed.Paused) { return; }
+
         // find next target
         List<EnemyObject> targets = FindAllEnemiesWithinRange();
 
@@ -230,13 +232,13 @@ public class TowerManager : MonoBehaviour
                 break;
             case TargetPriority.First:
                 // sort by path nodes remaining, asc
-                targets.Sort((e1, e2) => e1.gameObject.GetComponent<TravelingManager>().TargetNode.CompareTo(
-                                        e2.gameObject.GetComponent<TravelingManager>().TargetNode));
+                targets.Sort((e1, e2) => e2.gameObject.GetComponent<TravelingManager>().TargetNode.CompareTo(
+                                        e1.gameObject.GetComponent<TravelingManager>().TargetNode));
                 break;
             case TargetPriority.Last:
                 // sort by path nodes remaining, desc
-                targets.Sort((e1, e2) => e2.gameObject.GetComponent<TravelingManager>().TargetNode.CompareTo(
-                                        e1.gameObject.GetComponent<TravelingManager>().TargetNode));
+                targets.Sort((e1, e2) => e1.gameObject.GetComponent<TravelingManager>().TargetNode.CompareTo(
+                                        e2.gameObject.GetComponent<TravelingManager>().TargetNode));
                 break;
             case TargetPriority.Close:
                 // sort by range, ace

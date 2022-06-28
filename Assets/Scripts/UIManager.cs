@@ -244,8 +244,6 @@ public class UIManager : MonoBehaviour
 
         if (SourceForTowerInfoBox != null)
         {
-
-
             txtTowerInfoDmg.text = "Dmg: " + GetDamageFromTowerInfo(SourceForTowerInfoBox);
             txtTowerInfoRange.text = "Range: " + SourceForTowerInfoBox.RangeCurrent.ToString(DesiredInfoFormat);
             txtTowerInfoFireRate.text = "Fire Rate: " + SourceForTowerInfoBox.AttackDelayCurrent.ToString(DesiredInfoFormat);

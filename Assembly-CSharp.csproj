@@ -66,6 +66,7 @@
     <Compile Include="Assets\Scripts\Actors\HomeScript.cs" />
     <Compile Include="Assets\Scripts\Actors\EnemyObject.cs" />
     <Compile Include="Assets\Scripts\GameManager.cs" />
+    <Compile Include="Assets\PauseManager.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\TextMesh Pro\Shaders\TMPro.cginc" />

@@ -132,7 +132,10 @@ public class EnemyObject : MonoBehaviour
         if (!IsAlive) { Destroy(this.gameObject);}
         else 
         {
-            ApplyAnyActiveAttackEffects();
+            if(PauseManager.CurrentGameSpeed != PauseManager.GameSpeed.Paused)
+            {
+                ApplyAnyActiveAttackEffects();
+            }
         }
 
     }

@@ -72,8 +72,10 @@ public class ProjectileManager : MonoBehaviour
     {
         if (GameManager.CurrentGame.CurrentState == GameState.WaveFailed) { return; } // dont' do anything at this time
 
-        // first check that our destination still exists, or just quit
-        if (TargetType == TargetType.Enemy &&
+        if (PauseManager.CurrentGameSpeed == PauseManager.GameSpeed.Paused) { return; }
+
+            // first check that our destination still exists, or just quit
+            if (TargetType == TargetType.Enemy &&
             TargetEnemy == null || TargetEnemy.gameObject == null) { Destroy(this); Destroy(this.gameObject); }
 
         if (CurrentState == ProjectileState.Complete) { Destroy(this.gameObject); } // if we're done. quit
