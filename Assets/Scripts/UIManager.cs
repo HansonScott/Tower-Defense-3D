@@ -244,7 +244,9 @@ public class UIManager : MonoBehaviour
 
         if (SourceForTowerInfoBox != null)
         {
-            txtTowerInfoDmg.text = "Dmg: " + "?";
+
+
+            txtTowerInfoDmg.text = "Dmg: " + GetDamageFromTowerInfo(SourceForTowerInfoBox);
             txtTowerInfoRange.text = "Range: " + SourceForTowerInfoBox.RangeCurrent.ToString(DesiredInfoFormat);
             txtTowerInfoFireRate.text = "Fire Rate: " + SourceForTowerInfoBox.AttackDelayCurrent.ToString(DesiredInfoFormat);
 
@@ -255,6 +257,17 @@ public class UIManager : MonoBehaviour
         {
             EnemyInfoBox.SetActive(false);
         }
+    }
+
+    private float GetDamageFromTowerInfo(TowerManager t)
+    {
+        float result = 0;
+        foreach(AttackEffect ae in t.AttackEffects)
+        {
+            result = Math.Max(ae.Damage, result);
+        }
+
+        return result;
     }
 
     private void ColorSelectedTowerBasedOnValidity()
