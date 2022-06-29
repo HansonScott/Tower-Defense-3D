@@ -5,6 +5,7 @@ public enum GameState
 {
     SessionMenu,
     SessionStart,
+    SessionReady,
     WaveStart,
     WaveActive,
     WavePause,
@@ -29,8 +30,8 @@ public class GameManager : MonoBehaviour
 
     public int StartingMoney = 200;
 
-    private int _CurrentMoney = 0;
-    public int CurrentMoney
+    private float _CurrentMoney = 0;
+    public float CurrentMoney
     {
         get { return _CurrentMoney; }
         set
@@ -44,7 +45,7 @@ public class GameManager : MonoBehaviour
                 OnCurrentMoneyChange(_CurrentMoney);
         }
     }
-    public delegate void OnCurrentMoneyChangeDelegate(int newVal);
+    public delegate void OnCurrentMoneyChangeDelegate(float newVal);
     public event OnCurrentMoneyChangeDelegate OnCurrentMoneyChange;
 
     public EnemyObject EnemyTemplate;
@@ -187,6 +188,8 @@ public class GameManager : MonoBehaviour
             case GameState.SessionStart:
                 HandleSessionStart();
                 break;
+            case GameState.SessionReady:
+                break;
             case GameState.WaveStart:
 
                 //if (PauseManager.CurrentGameSpeed == PauseManager.GameSpeed.Paused) { return; }
@@ -239,8 +242,8 @@ public class GameManager : MonoBehaviour
         RefreshHomeHP();
         CurrentMoney = StartingMoney;
         
-        // moved this to be button-based
-        //CurrentState = GameState.WaveStart;
+        // since this is a one-time setup, advance the game state
+        CurrentState = GameState.SessionReady;
     }
 
     private void HandleWaveStart()
@@ -442,7 +445,8 @@ public class GameManager : MonoBehaviour
     {
         PauseManager.CurrentGameSpeed = PauseManager.GameSpeed.Play;
 
-        if (CurrentState == GameState.SessionStart)
+        if (CurrentState == GameState.SessionStart ||
+            CurrentState == GameState.SessionReady)
         {
             CurrentState = GameState.WaveStart;
             CurrentWaveInfo.TimeSinceNewWave = CurrentWaveInfo.WaveDelay; // start first wave immeditely

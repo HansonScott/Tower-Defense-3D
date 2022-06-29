@@ -103,11 +103,23 @@ public class UIManager : MonoBehaviour
     {
         txtScore.text = "Score: " + currentScore;
     }
-    private void CurrentMoneyHandler(int val)
+    private void CurrentMoneyHandler(float val)
     {
         RefreshMoneyLabel(val);
+        RefreshTowerButtonsForMoney();
     }
-    internal void RefreshMoneyLabel(int currentMoney)
+
+    private void RefreshTowerButtonsForMoney()
+    {
+        // for each button, enable/disable based on cost vs current money
+        TowerManager t = Tower01Template.GetComponent<TowerManager>();
+        if(t.CostCurrent == 0) { t.ResetCostCurrent(); }
+        float cost = t.CostCurrent;
+        float money = CurrentGameManager.CurrentMoney;
+        btnCanon.enabled = (money - cost >= 0);
+    }
+
+    internal void RefreshMoneyLabel(float currentMoney)
     {
         txtMoney.text = "$" + currentMoney;
     }
@@ -136,6 +148,9 @@ public class UIManager : MonoBehaviour
 
             // and turn on the collider, now that it's in the environment
             CurrentlySelectedTowerMenuItem.transform.GetComponentInChildren<BoxCollider>().enabled = true;
+
+            // and reduce our currency
+            GameManager.CurrentGame.CurrentMoney -= CurrentlySelectedTowerMenuItem.CostCurrent;
 
             // and set our UI back to normal
             CurrentUIState = UIState.Normal;
@@ -350,7 +365,9 @@ public class UIManager : MonoBehaviour
     private TowerManager CreateSelectedTower()
     {
         // instantiate the right tower based on what button was pressed
-        return Instantiate(Tower01Template.gameObject).GetComponent<TowerManager>();
+        TowerManager result =  Instantiate(Tower01Template.gameObject).GetComponent<TowerManager>();
+
+        return result;
     }
 
 }

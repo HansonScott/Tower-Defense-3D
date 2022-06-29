@@ -109,6 +109,7 @@ public class EnemyObject : MonoBehaviour
             catch (System.Exception e)
             {
                 // do we wan tto do anything here? the object is gone, no need to follow up?
+                print(e.ToString());
             }
         }
     }
@@ -141,7 +142,11 @@ public class EnemyObject : MonoBehaviour
     }
     private void UpdateHealthBar(float c, float m)
     {
-        if(gameObject == null) { return; }
+        try
+        {
+            if (gameObject == null) { return; }
+        }
+        catch { return; } // at this point, if we get an error here, we know exactly why, and don't want to do anything with it.
 
         Transform healthBar = gameObject.transform.GetChild(0);
 

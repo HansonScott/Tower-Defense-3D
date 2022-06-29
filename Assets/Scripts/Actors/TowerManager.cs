@@ -122,6 +122,18 @@ public class TowerManager : MonoBehaviour
             this.transform.Find("RangePlane").gameObject.SetActive(value);
         }
     }
+    private float CostBase = 100;
+    private float _CostCurrent = 100;
+    public float CostCurrent 
+    {
+        get { return _CostCurrent; }
+        internal set
+        {
+            _CostCurrent = value;
+
+            // update anything else?
+        }
+    }
 
     #endregion
 
@@ -178,6 +190,11 @@ public class TowerManager : MonoBehaviour
                 TimeSinceLastAttack += Time.deltaTime;
             }
         }
+    }
+
+    internal void ResetCostCurrent()
+    {
+        this.CostCurrent = this.CostBase;
     }
 
     private List<EnemyObject> FindAllEnemiesWithinRange()
