@@ -116,7 +116,7 @@ public class UIManager : MonoBehaviour
         if(t.CostCurrent == 0) { t.ResetCostCurrent(); }
         float cost = t.CostCurrent;
         float money = CurrentGameManager.CurrentMoney;
-        btnCanon.enabled = (money - cost >= 0);
+        btnCanon.interactable = (money - cost >= 0);
     }
 
     internal void RefreshMoneyLabel(float currentMoney)
